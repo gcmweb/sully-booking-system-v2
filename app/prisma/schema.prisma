@@ -1,0 +1,410 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/sully-booking-system/app/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  role          UserRole       @default(VENUE_OWNER)
+  isActive      Boolean        @default(true)
+  emailVerified Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  bookings      Booking[]
+  notifications Notification[]
+  sessions      UserSession[]
+  venues        Venue[]
+
+  @@map("users")
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+model Venue {
+  id             String              @id @default(cuid())
+  name           String
+  slug           String              @unique
+  description    String?
+  address        String
+  city           String
+  postcode       String
+  country        String              @default("UK")
+  phone          String
+  email          String
+  website        String?
+  cuisine        String?
+  venueType      VenueType
+  capacity       Int                 @default(50)
+  isActive       Boolean             @default(true)
+  settings       Json                @default("{}")
+  branding       Json                @default("{}")
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  ownerId        String
+  headerImageUrl String?
+  logoUrl        String?
+  featured       Boolean             @default(false)
+  analytics      Analytics[]
+  widgets        BookingWidget[]
+  bookings       Booking[]
+  events         Event[]
+  services       Service[]
+  subscription   Subscription?
+  tables         Table[]
+  availability   VenueAvailability[]
+  images         VenueImage[]
+  openingHours   VenueOpeningHours[]
+  staff          VenueStaff[]
+  owner          User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@map("venues")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  venueId              String             @unique
+  plan                 SubscriptionPlan
+  status               SubscriptionStatus
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  bookingsUsed         Int                @default(0)
+  bookingsLimit        Int?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  paypalSubscriptionId String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  payments             Payment[]
+  venue                Venue              @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model VenueImage {
+  id           String         @id @default(cuid())
+  venueId      String
+  url          String
+  alt          String?
+  type         VenueImageType
+  displayOrder Int            @default(0)
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  venue        Venue          @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("venue_images")
+}
+
+model Table {
+  id          String    @id @default(cuid())
+  venueId     String
+  name        String
+  capacity    Int
+  isActive    Boolean   @default(true)
+  position    Json?
+  description String?
+  bookings    Booking[]
+  venue       Venue     @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("tables")
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  venueId         String
+  customerId      String?
+  tableId         String?
+  serviceType     ServiceType
+  status          BookingStatus @default(PENDING)
+  date            DateTime
+  time            String
+  duration        Int           @default(120)
+  partySize       Int
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  specialRequests String?
+  totalAmount     Decimal?      @db.Decimal(10, 2)
+  depositAmount   Decimal?      @db.Decimal(10, 2)
+  isPaid          Boolean       @default(false)
+  source          BookingSource @default(DIRECT)
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  customer        User?         @relation(fields: [customerId], references: [id])
+  table           Table?        @relation(fields: [tableId], references: [id])
+  venue           Venue         @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  payments        Payment[]
+
+  @@map("bookings")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  venueId     String
+  name        String
+  description String?
+  date        DateTime
+  startTime   String
+  endTime     String
+  capacity    Int
+  price       Decimal? @db.Decimal(10, 2)
+  isActive    Boolean  @default(true)
+  isRecurring Boolean  @default(false)
+  recurrence  Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  venue       Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("events")
+}
+
+model Service {
+  id          String      @id @default(cuid())
+  venueId     String
+  type        ServiceType
+  name        String
+  description String?
+  isActive    Boolean     @default(true)
+  settings    Json        @default("{}")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  venue       Venue       @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("services")
+}
+
+model VenueAvailability {
+  id        String    @id @default(cuid())
+  venueId   String
+  dayOfWeek Int
+  openTime  String
+  closeTime String
+  isOpen    Boolean   @default(true)
+  date      DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  venue     Venue     @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@unique([venueId, dayOfWeek], name: "venueId_dayOfWeek")
+  @@map("venue_availability")
+}
+
+model VenueOpeningHours {
+  id        String   @id @default(cuid())
+  venueId   String
+  dayOfWeek Int
+  openTime  String
+  closeTime String
+  name      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  venue     Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("venue_opening_hours")
+}
+
+model VenueStaff {
+  id       String    @id @default(cuid())
+  venueId  String
+  name     String
+  email    String
+  role     StaffRole
+  isActive Boolean   @default(true)
+  venue    Venue     @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("venue_staff")
+}
+
+model Payment {
+  id                String          @id @default(cuid())
+  bookingId         String?
+  subscriptionId    String?
+  amount            Decimal         @db.Decimal(10, 2)
+  currency          String          @default("GBP")
+  status            PaymentStatus
+  provider          PaymentProvider
+  providerPaymentId String?
+  metadata          Json?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  booking           Booking?        @relation(fields: [bookingId], references: [id])
+  subscription      Subscription?   @relation(fields: [subscriptionId], references: [id])
+
+  @@map("payments")
+}
+
+model BookingWidget {
+  id        String   @id @default(cuid())
+  venueId   String
+  name      String
+  settings  Json     @default("{}")
+  isActive  Boolean  @default(true)
+  embedCode String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  venue     Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("booking_widgets")
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  venueId   String
+  date      DateTime
+  metric    String
+  value     Decimal  @db.Decimal(15, 2)
+  metadata  Json?
+  createdAt DateTime @default(now())
+  venue     Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("analytics")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean          @default(false)
+  metadata  Json?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model EmailTemplate {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  subject  String
+  htmlBody String
+  textBody String?
+  isActive Boolean @default(true)
+
+  @@map("email_templates")
+}
+
+model SmsTemplate {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  message  String
+  isActive Boolean @default(true)
+
+  @@map("sms_templates")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  VENUE_OWNER
+  VENUE_STAFF
+  CUSTOMER
+}
+
+enum VenueType {
+  RESTAURANT
+  CAFE
+  BAR
+  PUB
+  FOOD_TRUCK
+  FINE_DINING
+  FAST_CASUAL
+  BAKERY
+  OTHER
+}
+
+enum SubscriptionPlan {
+  FREE
+  PAID
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  UNPAID
+}
+
+enum ServiceType {
+  DINE_IN
+  TAKEAWAY
+  DELIVERY
+  EVENT
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum BookingSource {
+  DIRECT
+  WIDGET
+  API
+  PHONE
+  WALK_IN
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+}
+
+enum StaffRole {
+  MANAGER
+  HOST
+  SERVER
+  ADMIN
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMATION
+  BOOKING_REMINDER
+  BOOKING_CANCELLED
+  PAYMENT_RECEIVED
+  SUBSCRIPTION_EXPIRING
+  SYSTEM_ALERT
+}
+
+enum VenueImageType {
+  MENU
+  FOOD
+  INTERIOR
+  EXTERIOR
+  STAFF
+  EVENT
+  OTHER
+}
