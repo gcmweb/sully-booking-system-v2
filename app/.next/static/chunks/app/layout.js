@@ -255,7 +255,7 @@ var __dirname = "/";
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("693c1f7b7728");
+/* harmony default export */ __webpack_exports__["default"] = ("f79e8909e8ce");
 if (true) { module.hot.accept() }
 
 
@@ -1311,7 +1311,7 @@ function formatDuration(seconds) {
 // extracted by mini-css-extract-plugin
 module.exports = {"style":{"fontFamily":"'__Inter_e8ce0c', '__Inter_Fallback_e8ce0c'","fontStyle":"normal"},"className":"__className_e8ce0c"};
     if(true) {
-      // 1750341233245
+      // 1750349464457
       var cssReload = __webpack_require__(/*! ./node_modules/next/dist/compiled/mini-css-extract-plugin/hmr/hotModuleReplacement.js */ "(app-pages-browser)/./node_modules/next/dist/compiled/mini-css-extract-plugin/hmr/hotModuleReplacement.js")(module.id, {"publicPath":"/_next/","esModule":false,"locals":true});
       module.hot.dispose(cssReload);
       
