@@ -5,7 +5,7 @@ echo "🚀 Starting Netlify build process..."
 
 # Install dependencies if needed
 echo "📦 Installing dependencies..."
-npm install
+npm install --legacy-peer-deps
 
 # Generate Prisma Client
 echo "🗄️  Generating Prisma client..."
