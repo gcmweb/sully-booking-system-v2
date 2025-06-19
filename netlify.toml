@@ -1,8 +1,7 @@
-
 [build]
   base = "app/"
-  publish = "app/out"
-  command = "chmod +x build-netlify.sh && ./build-netlify.sh"
+  publish = "app/.next"
+  command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
