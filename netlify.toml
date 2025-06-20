@@ -1,12 +1,14 @@
 [build]
   base = "app/"
-  publish = "app/.next"
-  command = "chmod +x build-netlify.sh && ./build-netlify.sh"
+  publish = ".next"
+  command = "npm install --legacy-peer-deps && npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "9"
-  NETLIFY_NEXT_PLUGIN_SKIP = "false"
+  NEXT_TELEMETRY_DISABLED = "1"
+  PRISMA_GENERATE_SKIP_AUTOINSTALL = "true"
+  DATABASE_URL = "file:./dev.db"
 
 # Headers for security and caching
 [[headers]]

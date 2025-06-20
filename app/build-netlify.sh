@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # Netlify Build Script for Sully Booking System
