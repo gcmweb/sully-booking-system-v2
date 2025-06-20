@@ -1,7 +1,6 @@
 generator client {
     provider = "prisma-client-js"
-    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
-    output = "/home/ubuntu/sully-booking-system/app/node_modules/.prisma/client"
+    binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -365,10 +364,10 @@ enum BookingStatus {
 
 enum BookingSource {
   DIRECT
-  WIDGET
-  API
   PHONE
   WALK_IN
+  ONLINE
+  THIRD_PARTY
 }
 
 enum PaymentStatus {
@@ -381,30 +380,29 @@ enum PaymentStatus {
 enum PaymentProvider {
   STRIPE
   PAYPAL
+  CASH
+  CARD
+}
+
+enum VenueImageType {
+  HEADER
+  GALLERY
+  LOGO
+  MENU
 }
 
 enum StaffRole {
   MANAGER
+  WAITER
+  CHEF
   HOST
-  SERVER
   ADMIN
 }
 
 enum NotificationType {
-  BOOKING_CONFIRMATION
-  BOOKING_REMINDER
+  BOOKING_CONFIRMED
   BOOKING_CANCELLED
   PAYMENT_RECEIVED
-  SUBSCRIPTION_EXPIRING
-  SYSTEM_ALERT
-}
-
-enum VenueImageType {
-  MENU
-  FOOD
-  INTERIOR
-  EXTERIOR
-  STAFF
-  EVENT
-  OTHER
+  REMINDER
+  SYSTEM
 }
