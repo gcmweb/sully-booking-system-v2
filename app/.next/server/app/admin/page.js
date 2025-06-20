@@ -1,1 +1,1899 @@
-(()=>{var e={};e.id=3,e.ids=[3],e.modules={72934:e=>{"use strict";e.exports=require("next/dist/client/components/action-async-storage.external.js")},54580:e=>{"use strict";e.exports=require("next/dist/client/components/request-async-storage.external.js")},45869:e=>{"use strict";e.exports=require("next/dist/client/components/static-generation-async-storage.external.js")},20399:e=>{"use strict";e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},36923:(e,t,s)=>{"use strict";s.r(t),s.d(t,{GlobalError:()=>i.a,__next_app__:()=>m,originalPathname:()=>u,pages:()=>c,routeModule:()=>x,tree:()=>d}),s(66136),s(35392),s(35866);var r=s(23191),a=s(88716),n=s(37922),i=s.n(n),l=s(95231),o={};for(let e in l)0>["default","tree","pages","GlobalError","originalPathname","__next_app__","routeModule"].indexOf(e)&&(o[e]=()=>l[e]);s.d(t,o);let d=["",{children:["admin",{children:["__PAGE__",{},{page:[()=>Promise.resolve().then(s.bind(s,66136)),"/home/ubuntu/sully-booking-system/app/app/admin/page.tsx"]}]},{}]},{layout:[()=>Promise.resolve().then(s.bind(s,35392)),"/home/ubuntu/sully-booking-system/app/app/layout.tsx"],"not-found":[()=>Promise.resolve().then(s.t.bind(s,35866,23)),"next/dist/client/components/not-found-error"]}],c=["/home/ubuntu/sully-booking-system/app/app/admin/page.tsx"],u="/admin/page",m={require:s,loadChunk:()=>Promise.resolve()},x=new r.AppPageRouteModule({definition:{kind:a.x.APP_PAGE,page:"/admin/page",pathname:"/admin",bundlePath:"",filename:"",appPaths:[]},userland:{loaderTree:d}})},12415:(e,t,s)=>{Promise.resolve().then(s.bind(s,19652))},6227:(e,t,s)=>{Promise.resolve().then(s.bind(s,70209))},6754:(e,t,s)=>{Promise.resolve().then(s.t.bind(s,12994,23)),Promise.resolve().then(s.t.bind(s,96114,23)),Promise.resolve().then(s.t.bind(s,9727,23)),Promise.resolve().then(s.t.bind(s,79671,23)),Promise.resolve().then(s.t.bind(s,41868,23)),Promise.resolve().then(s.t.bind(s,84759,23))},19652:(e,t,s)=>{"use strict";s.r(t),s.d(t,{default:()=>b});var r=s(10326),a=s(17577),n=s(70209),i=s(35047),l=s(33071),o=s(90772),d=s(567),c=s(8122);let u=(0,s(62881).Z)("LayoutDashboard",[["rect",{width:"7",height:"9",x:"3",y:"3",rx:"1",key:"10lvy0"}],["rect",{width:"7",height:"5",x:"14",y:"3",rx:"1",key:"16une8"}],["rect",{width:"7",height:"9",x:"14",y:"12",rx:"1",key:"1hutg5"}],["rect",{width:"7",height:"5",x:"3",y:"16",rx:"1",key:"ldoo1y"}]]);var m=s(71810),x=s(24061),h=s(38787),p=s(28916),y=s(17069),g=s(66697),f=s(90434),j=s(16856),v=s(94215);function b(){let{user:e,loading:t,logout:s}=(0,n.a)(),b=(0,i.useRouter)(),{toast:N}=(0,v.pm)(),[w,k]=(0,a.useState)(null),[S,Z]=(0,a.useState)([]),[P,M]=(0,a.useState)([]),[A,O]=(0,a.useState)(!0),E=async()=>{try{await s(),N({title:"Signed out successfully",description:"You have been logged out."})}catch(e){N({title:"Error",description:"Failed to sign out. Please try again.",variant:"destructive"})}};return t||!e||"SUPER_ADMIN"!==e.role?r.jsx("div",{className:"min-h-screen flex items-center justify-center",children:r.jsx("div",{className:"animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"})}):(0,r.jsxs)("div",{className:"min-h-screen bg-gray-50",children:[r.jsx("header",{className:"bg-white shadow-sm border-b",children:r.jsx("div",{className:"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",children:(0,r.jsxs)("div",{className:"flex justify-between items-center h-16",children:[(0,r.jsxs)("div",{className:"flex items-center space-x-4",children:[(0,r.jsxs)(f.default,{href:"/",className:"flex items-center space-x-2",children:[r.jsx(c.Z,{className:"h-8 w-8 text-blue-600"}),r.jsx("span",{className:"text-2xl font-bold text-gray-900",children:"Sully"})]}),r.jsx(d.C,{variant:"secondary",children:"Admin Panel"})]}),(0,r.jsxs)("div",{className:"flex items-center space-x-4",children:[(0,r.jsxs)("span",{className:"text-sm text-gray-600",children:["Welcome, ",e.firstName,"!"]}),(0,r.jsxs)(o.z,{variant:"outline",size:"sm",onClick:()=>b.push("/dashboard"),children:[r.jsx(u,{className:"h-4 w-4 mr-2"}),"Venue Management"]}),(0,r.jsxs)(o.z,{variant:"outline",size:"sm",onClick:E,children:[r.jsx(m.Z,{className:"h-4 w-4 mr-2"}),"Sign Out"]})]})]})})}),(0,r.jsxs)("div",{className:"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8",children:[(0,r.jsxs)(j.E.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},transition:{duration:.8},className:"mb-8",children:[r.jsx("h1",{className:"text-3xl font-bold text-gray-900 mb-2",children:"Admin Dashboard"}),r.jsx("p",{className:"text-gray-600",children:"Monitor and manage the entire Sully booking system"})]}),A?r.jsx("div",{className:"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8",children:[1,2,3,4].map(e=>(0,r.jsxs)(l.Zb,{className:"animate-pulse",children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center justify-between space-y-0 pb-2",children:[r.jsx("div",{className:"h-4 bg-gray-200 rounded w-1/2"}),r.jsx("div",{className:"h-4 w-4 bg-gray-200 rounded"})]}),(0,r.jsxs)(l.aY,{children:[r.jsx("div",{className:"h-8 bg-gray-200 rounded w-1/3 mb-2"}),r.jsx("div",{className:"h-3 bg-gray-200 rounded w-2/3"})]})]},e))}):(0,r.jsxs)(j.E.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},transition:{duration:.8,delay:.1},className:"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8",children:[(0,r.jsxs)(l.Zb,{children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center justify-between space-y-0 pb-2",children:[r.jsx(l.ll,{className:"text-sm font-medium",children:"Total Users"}),r.jsx(x.Z,{className:"h-4 w-4 text-muted-foreground"})]}),(0,r.jsxs)(l.aY,{children:[r.jsx("div",{className:"text-2xl font-bold",children:w?.totalUsers||0}),r.jsx("p",{className:"text-xs text-muted-foreground",children:"Registered users"})]})]}),(0,r.jsxs)(l.Zb,{children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center justify-between space-y-0 pb-2",children:[r.jsx(l.ll,{className:"text-sm font-medium",children:"Total Venues"}),r.jsx(h.Z,{className:"h-4 w-4 text-muted-foreground"})]}),(0,r.jsxs)(l.aY,{children:[r.jsx("div",{className:"text-2xl font-bold",children:w?.totalVenues||0}),r.jsx("p",{className:"text-xs text-muted-foreground",children:"Active venues"})]})]}),(0,r.jsxs)(l.Zb,{children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center justify-between space-y-0 pb-2",children:[r.jsx(l.ll,{className:"text-sm font-medium",children:"Total Bookings"}),r.jsx(c.Z,{className:"h-4 w-4 text-muted-foreground"})]}),(0,r.jsxs)(l.aY,{children:[r.jsx("div",{className:"text-2xl font-bold",children:w?.totalBookings||0}),r.jsx("p",{className:"text-xs text-muted-foreground",children:"All time bookings"})]})]}),(0,r.jsxs)(l.Zb,{children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center justify-between space-y-0 pb-2",children:[r.jsx(l.ll,{className:"text-sm font-medium",children:"Active Subscriptions"}),r.jsx(p.Z,{className:"h-4 w-4 text-muted-foreground"})]}),(0,r.jsxs)(l.aY,{children:[r.jsx("div",{className:"text-2xl font-bold",children:w?.activeSubscriptions||0}),r.jsx("p",{className:"text-xs text-muted-foreground",children:"Paying customers"})]})]})]}),(0,r.jsxs)(j.E.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},transition:{duration:.8,delay:.2},className:"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8",children:[r.jsx(f.default,{href:"/admin/users",children:(0,r.jsxs)(l.Zb,{className:"hover:shadow-lg transition-shadow cursor-pointer group",children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center space-y-0 pb-2",children:[r.jsx(l.ll,{className:"text-sm font-medium",children:"Manage Users"}),r.jsx(x.Z,{className:"h-4 w-4 ml-auto text-blue-600 group-hover:scale-110 transition-transform"})]}),r.jsx(l.aY,{children:r.jsx("p",{className:"text-xs text-muted-foreground",children:"View, enable/disable, and manage all system users"})})]})}),r.jsx(f.default,{href:"/admin/venues",children:(0,r.jsxs)(l.Zb,{className:"hover:shadow-lg transition-shadow cursor-pointer group",children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center space-y-0 pb-2",children:[r.jsx(l.ll,{className:"text-sm font-medium",children:"Manage Venues"}),r.jsx(h.Z,{className:"h-4 w-4 ml-auto text-green-600 group-hover:scale-110 transition-transform"})]}),r.jsx(l.aY,{children:r.jsx("p",{className:"text-xs text-muted-foreground",children:"Oversee all venues, owners, and venue settings"})})]})}),(0,r.jsxs)(l.Zb,{className:"opacity-50 cursor-not-allowed",children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center space-y-0 pb-2",children:[r.jsx(l.ll,{className:"text-sm font-medium",children:"System Analytics"}),r.jsx(y.Z,{className:"h-4 w-4 ml-auto text-purple-600"})]}),r.jsx(l.aY,{children:r.jsx("p",{className:"text-xs text-muted-foreground",children:"Advanced analytics coming soon"})})]}),r.jsx(f.default,{href:"/admin/system",children:(0,r.jsxs)(l.Zb,{className:"hover:shadow-lg transition-shadow cursor-pointer group",children:[(0,r.jsxs)(l.Ol,{className:"flex flex-row items-center space-y-0 pb-2",children:[r.jsx(l.ll,{className:"text-sm font-medium",children:"System Settings"}),r.jsx(g.Z,{className:"h-4 w-4 ml-auto text-orange-600 group-hover:scale-110 transition-transform"})]}),r.jsx(l.aY,{children:r.jsx("p",{className:"text-xs text-muted-foreground",children:"Configure system settings and platform options"})})]})})]}),(0,r.jsxs)("div",{className:"grid grid-cols-1 lg:grid-cols-2 gap-6",children:[r.jsx(j.E.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},transition:{duration:.8,delay:.3},children:(0,r.jsxs)(l.Zb,{children:[(0,r.jsxs)(l.Ol,{children:[(0,r.jsxs)(l.ll,{className:"flex items-center space-x-2",children:[r.jsx(g.Z,{className:"h-5 w-5"}),r.jsx("span",{children:"Recent Bookings"})]}),r.jsx(l.SZ,{children:"Latest booking activity across all venues"})]}),r.jsx(l.aY,{children:0===S.length?r.jsx("p",{className:"text-sm text-gray-500 text-center py-4",children:"No recent bookings"}):r.jsx("div",{className:"space-y-3",children:S.map(e=>(0,r.jsxs)("div",{className:"flex items-center justify-between p-3 bg-gray-50 rounded-lg",children:[(0,r.jsxs)("div",{children:[r.jsx("p",{className:"font-medium text-sm",children:e.customerName}),r.jsx("p",{className:"text-xs text-gray-600",children:e.venue.name})]}),(0,r.jsxs)("div",{className:"text-right",children:[r.jsx(d.C,{variant:"outline",className:"text-xs",children:e.status}),r.jsx("p",{className:"text-xs text-gray-600 mt-1",children:new Date(e.date).toLocaleDateString()})]})]},e.id))})})]})}),r.jsx(j.E.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},transition:{duration:.8,delay:.4},children:(0,r.jsxs)(l.Zb,{children:[(0,r.jsxs)(l.Ol,{children:[(0,r.jsxs)(l.ll,{className:"flex items-center space-x-2",children:[r.jsx(x.Z,{className:"h-5 w-5"}),r.jsx("span",{children:"Recent Users"})]}),r.jsx(l.SZ,{children:"Newly registered users"})]}),r.jsx(l.aY,{children:0===P.length?r.jsx("p",{className:"text-sm text-gray-500 text-center py-4",children:"No recent users"}):r.jsx("div",{className:"space-y-3",children:P.map(e=>(0,r.jsxs)("div",{className:"flex items-center justify-between p-3 bg-gray-50 rounded-lg",children:[(0,r.jsxs)("div",{children:[(0,r.jsxs)("p",{className:"font-medium text-sm",children:[e.firstName," ",e.lastName]}),r.jsx("p",{className:"text-xs text-gray-600",children:e.email})]}),(0,r.jsxs)("div",{className:"text-right",children:[r.jsx(d.C,{variant:"outline",className:"text-xs",children:e.role}),r.jsx("p",{className:"text-xs text-gray-600 mt-1",children:new Date(e.createdAt).toLocaleDateString()})]})]},e.id))})})]})})]})]})]})}},70209:(e,t,s)=>{"use strict";s.d(t,{AuthProvider:()=>i,a:()=>l});var r=s(10326),a=s(17577);let n=(0,a.createContext)(void 0);function i({children:e}){let[t,s]=(0,a.useState)(null),[i,l]=(0,a.useState)(!0),o=async(e,t)=>!1,d=async e=>!1;return r.jsx(n.Provider,{value:{user:t,loading:i,login:o,logout:()=>{s(null)},register:d},children:e})}function l(){let e=(0,a.useContext)(n);if(void 0===e)throw Error("useAuth must be used within an AuthProvider");return e}},567:(e,t,s)=>{"use strict";s.d(t,{C:()=>l});var r=s(10326);s(17577);var a=s(28671),n=s(77863);let i=(0,a.j)("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",{variants:{variant:{default:"border-transparent bg-primary text-primary-foreground hover:bg-primary/80",secondary:"border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",destructive:"border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",outline:"text-foreground"}},defaultVariants:{variant:"default"}});function l({className:e,variant:t,...s}){return r.jsx("div",{className:(0,n.cn)(i({variant:t}),e),...s})}},90772:(e,t,s)=>{"use strict";s.d(t,{d:()=>o,z:()=>d});var r=s(10326),a=s(17577),n=s(34214),i=s(28671),l=s(77863);let o=(0,i.j)("inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",{variants:{variant:{default:"bg-primary text-primary-foreground hover:bg-primary/90",destructive:"bg-destructive text-destructive-foreground hover:bg-destructive/90",outline:"border border-input bg-background hover:bg-accent hover:text-accent-foreground",secondary:"bg-secondary text-secondary-foreground hover:bg-secondary/80",ghost:"hover:bg-accent hover:text-accent-foreground",link:"text-primary underline-offset-4 hover:underline"},size:{default:"h-10 px-4 py-2",sm:"h-9 rounded-md px-3",lg:"h-11 rounded-md px-8",icon:"h-10 w-10"}},defaultVariants:{variant:"default",size:"default"}}),d=a.forwardRef(({className:e,variant:t,size:s,asChild:a=!1,...i},d)=>{let c=a?n.g7:"button";return r.jsx(c,{className:(0,l.cn)(o({variant:t,size:s,className:e})),ref:d,...i})});d.displayName="Button"},33071:(e,t,s)=>{"use strict";s.d(t,{Ol:()=>l,SZ:()=>d,Zb:()=>i,aY:()=>c,ll:()=>o});var r=s(10326),a=s(17577),n=s(77863);let i=a.forwardRef(({className:e,...t},s)=>r.jsx("div",{ref:s,className:(0,n.cn)("rounded-lg border bg-card text-card-foreground shadow-sm",e),...t}));i.displayName="Card";let l=a.forwardRef(({className:e,...t},s)=>r.jsx("div",{ref:s,className:(0,n.cn)("flex flex-col space-y-1.5 p-6",e),...t}));l.displayName="CardHeader";let o=a.forwardRef(({className:e,...t},s)=>r.jsx("h3",{ref:s,className:(0,n.cn)("text-2xl font-semibold leading-none tracking-tight",e),...t}));o.displayName="CardTitle";let d=a.forwardRef(({className:e,...t},s)=>r.jsx("p",{ref:s,className:(0,n.cn)("text-sm text-muted-foreground",e),...t}));d.displayName="CardDescription";let c=a.forwardRef(({className:e,...t},s)=>r.jsx("div",{ref:s,className:(0,n.cn)("p-6 pt-0",e),...t}));c.displayName="CardContent",a.forwardRef(({className:e,...t},s)=>r.jsx("div",{ref:s,className:(0,n.cn)("flex items-center p-6 pt-0",e),...t})).displayName="CardFooter"},94215:(e,t,s)=>{"use strict";s.d(t,{pm:()=>m});var r=s(17577);let a=0,n=new Map,i=e=>{if(n.has(e))return;let t=setTimeout(()=>{n.delete(e),c({type:"REMOVE_TOAST",toastId:e})},1e6);n.set(e,t)},l=(e,t)=>{switch(t.type){case"ADD_TOAST":return{...e,toasts:[t.toast,...e.toasts].slice(0,1)};case"UPDATE_TOAST":return{...e,toasts:e.toasts.map(e=>e.id===t.toast.id?{...e,...t.toast}:e)};case"DISMISS_TOAST":{let{toastId:s}=t;return s?i(s):e.toasts.forEach(e=>{i(e.id)}),{...e,toasts:e.toasts.map(e=>e.id===s||void 0===s?{...e,open:!1}:e)}}case"REMOVE_TOAST":if(void 0===t.toastId)return{...e,toasts:[]};return{...e,toasts:e.toasts.filter(e=>e.id!==t.toastId)}}},o=[],d={toasts:[]};function c(e){d=l(d,e),o.forEach(e=>{e(d)})}function u({...e}){let t=(a=(a+1)%Number.MAX_SAFE_INTEGER).toString(),s=()=>c({type:"DISMISS_TOAST",toastId:t});return c({type:"ADD_TOAST",toast:{...e,id:t,open:!0,onOpenChange:e=>{e||s()}}}),{id:t,dismiss:s,update:e=>c({type:"UPDATE_TOAST",toast:{...e,id:t}})}}function m(){let[e,t]=r.useState(d);return r.useEffect(()=>(o.push(t),()=>{let e=o.indexOf(t);e>-1&&o.splice(e,1)}),[e]),{...e,toast:u,dismiss:e=>c({type:"DISMISS_TOAST",toastId:e})}}},77863:(e,t,s)=>{"use strict";s.d(t,{cn:()=>n});var r=s(41135),a=s(31009);function n(...e){return(0,a.m6)((0,r.W)(e))}},66697:(e,t,s)=>{"use strict";s.d(t,{Z:()=>r});let r=(0,s(62881).Z)("Activity",[["path",{d:"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2",key:"169zse"}]])},38787:(e,t,s)=>{"use strict";s.d(t,{Z:()=>r});let r=(0,s(62881).Z)("Building",[["rect",{width:"16",height:"20",x:"4",y:"2",rx:"2",ry:"2",key:"76otgf"}],["path",{d:"M9 22v-4h6v4",key:"r93iot"}],["path",{d:"M8 6h.01",key:"1dz90k"}],["path",{d:"M16 6h.01",key:"1x0f13"}],["path",{d:"M12 6h.01",key:"1vi96p"}],["path",{d:"M12 10h.01",key:"1nrarc"}],["path",{d:"M12 14h.01",key:"1etili"}],["path",{d:"M16 10h.01",key:"1m94wz"}],["path",{d:"M16 14h.01",key:"1gbofw"}],["path",{d:"M8 10h.01",key:"19clt8"}],["path",{d:"M8 14h.01",key:"6423bh"}]])},8122:(e,t,s)=>{"use strict";s.d(t,{Z:()=>r});let r=(0,s(62881).Z)("CalendarDays",[["path",{d:"M8 2v4",key:"1cmpym"}],["path",{d:"M16 2v4",key:"4m81vk"}],["rect",{width:"18",height:"18",x:"3",y:"4",rx:"2",key:"1hopcy"}],["path",{d:"M3 10h18",key:"8toen8"}],["path",{d:"M8 14h.01",key:"6423bh"}],["path",{d:"M12 14h.01",key:"1etili"}],["path",{d:"M16 14h.01",key:"1gbofw"}],["path",{d:"M8 18h.01",key:"lrp35t"}],["path",{d:"M12 18h.01",key:"mhygvu"}],["path",{d:"M16 18h.01",key:"kzsmim"}]])},28916:(e,t,s)=>{"use strict";s.d(t,{Z:()=>r});let r=(0,s(62881).Z)("CreditCard",[["rect",{width:"20",height:"14",x:"2",y:"5",rx:"2",key:"ynyp8z"}],["line",{x1:"2",x2:"22",y1:"10",y2:"10",key:"1b3vmo"}]])},71810:(e,t,s)=>{"use strict";s.d(t,{Z:()=>r});let r=(0,s(62881).Z)("LogOut",[["path",{d:"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4",key:"1uf3rs"}],["polyline",{points:"16 17 21 12 16 7",key:"1gabdz"}],["line",{x1:"21",x2:"9",y1:"12",y2:"12",key:"1uyos4"}]])},17069:(e,t,s)=>{"use strict";s.d(t,{Z:()=>r});let r=(0,s(62881).Z)("TrendingUp",[["polyline",{points:"22 7 13.5 15.5 8.5 10.5 2 17",key:"126l90"}],["polyline",{points:"16 7 22 7 22 13",key:"kwv8wd"}]])},24061:(e,t,s)=>{"use strict";s.d(t,{Z:()=>r});let r=(0,s(62881).Z)("Users",[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",key:"1yyitq"}],["circle",{cx:"9",cy:"7",r:"4",key:"nufk8"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87",key:"kshegd"}],["path",{d:"M16 3.13a4 4 0 0 1 0 7.75",key:"1da9ce"}]])},35047:(e,t,s)=>{"use strict";var r=s(77389);s.o(r,"useParams")&&s.d(t,{useParams:function(){return r.useParams}}),s.o(r,"useRouter")&&s.d(t,{useRouter:function(){return r.useRouter}}),s.o(r,"useSearchParams")&&s.d(t,{useSearchParams:function(){return r.useSearchParams}})},66136:(e,t,s)=>{"use strict";s.r(t),s.d(t,{default:()=>r});let r=(0,s(68570).createProxy)(String.raw`/home/ubuntu/sully-booking-system/app/app/admin/page.tsx#default`)},35392:(e,t,s)=>{"use strict";s.r(t),s.d(t,{default:()=>d,metadata:()=>o});var r=s(19510),a=s(85384),n=s.n(a);s(67272);var i=s(68570);let l=(0,i.createProxy)(String.raw`/home/ubuntu/sully-booking-system/app/components/auth-provider.tsx#AuthProvider`);(0,i.createProxy)(String.raw`/home/ubuntu/sully-booking-system/app/components/auth-provider.tsx#useAuth`);let o={title:"Sully Booking System",description:"Complete booking management system for restaurants, cafes, bars, and venues",keywords:"booking system, restaurant reservations, table booking, venue management"};function d({children:e}){return r.jsx("html",{lang:"en",children:r.jsx("body",{className:n().className,children:r.jsx(l,{children:e})})})}},67272:()=>{},48051:(e,t,s)=>{"use strict";s.d(t,{F:()=>a,e:()=>n});var r=s(17577);function a(...e){return t=>e.forEach(e=>{"function"==typeof e?e(t):null!=e&&(e.current=t)})}function n(...e){return r.useCallback(a(...e),e)}},34214:(e,t,s)=>{"use strict";s.d(t,{A4:()=>o,g7:()=>i});var r=s(17577),a=s(48051),n=s(10326),i=r.forwardRef((e,t)=>{let{children:s,...a}=e,i=r.Children.toArray(s),o=i.find(d);if(o){let e=o.props.children,s=i.map(t=>t!==o?t:r.Children.count(e)>1?r.Children.only(null):r.isValidElement(e)?e.props.children:null);return(0,n.jsx)(l,{...a,ref:t,children:r.isValidElement(e)?r.cloneElement(e,void 0,s):null})}return(0,n.jsx)(l,{...a,ref:t,children:s})});i.displayName="Slot";var l=r.forwardRef((e,t)=>{let{children:s,...n}=e;if(r.isValidElement(s)){let e=function(e){let t=Object.getOwnPropertyDescriptor(e.props,"ref")?.get,s=t&&"isReactWarning"in t&&t.isReactWarning;return s?e.ref:(s=(t=Object.getOwnPropertyDescriptor(e,"ref")?.get)&&"isReactWarning"in t&&t.isReactWarning)?e.props.ref:e.props.ref||e.ref}(s);return r.cloneElement(s,{...function(e,t){let s={...t};for(let r in t){let a=e[r],n=t[r];/^on[A-Z]/.test(r)?a&&n?s[r]=(...e)=>{n(...e),a(...e)}:a&&(s[r]=a):"style"===r?s[r]={...a,...n}:"className"===r&&(s[r]=[a,n].filter(Boolean).join(" "))}return{...e,...s}}(n,s.props),ref:t?(0,a.F)(t,e):e})}return r.Children.count(s)>1?r.Children.only(null):null});l.displayName="SlotClone";var o=({children:e})=>(0,n.jsx)(n.Fragment,{children:e});function d(e){return r.isValidElement(e)&&e.type===o}}};var t=require("../../webpack-runtime.js");t.C(e);var s=e=>t(t.s=e),r=t.X(0,[9276,2892,9185,434,6856],()=>s(36923));module.exports=r})();
+(() => {
+var exports = {};
+exports.id = "app/admin/page";
+exports.ids = ["app/admin/page"];
+exports.modules = {
+
+/***/ "../../client/components/action-async-storage.external":
+/*!*******************************************************************************!*\
+  !*** external "next/dist/client/components/action-async-storage.external.js" ***!
+  \*******************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("next/dist/client/components/action-async-storage.external.js");
+
+/***/ }),
+
+/***/ "../../client/components/request-async-storage.external":
+/*!********************************************************************************!*\
+  !*** external "next/dist/client/components/request-async-storage.external.js" ***!
+  \********************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("next/dist/client/components/request-async-storage.external.js");
+
+/***/ }),
+
+/***/ "../../client/components/static-generation-async-storage.external":
+/*!******************************************************************************************!*\
+  !*** external "next/dist/client/components/static-generation-async-storage.external.js" ***!
+  \******************************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("next/dist/client/components/static-generation-async-storage.external.js");
+
+/***/ }),
+
+/***/ "next/dist/compiled/next-server/app-page.runtime.dev.js":
+/*!*************************************************************************!*\
+  !*** external "next/dist/compiled/next-server/app-page.runtime.dev.js" ***!
+  \*************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("next/dist/compiled/next-server/app-page.runtime.dev.js");
+
+/***/ }),
+
+/***/ "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fadmin%2Fpage&page=%2Fadmin%2Fpage&appPaths=%2Fadmin%2Fpage&pagePath=private-next-app-dir%2Fadmin%2Fpage.tsx&appDir=%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D!":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fadmin%2Fpage&page=%2Fadmin%2Fpage&appPaths=%2Fadmin%2Fpage&pagePath=private-next-app-dir%2Fadmin%2Fpage.tsx&appDir=%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D! ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   GlobalError: () => (/* reexport default from dynamic */ next_dist_client_components_error_boundary__WEBPACK_IMPORTED_MODULE_2___default.a),
+/* harmony export */   __next_app__: () => (/* binding */ __next_app__),
+/* harmony export */   originalPathname: () => (/* binding */ originalPathname),
+/* harmony export */   pages: () => (/* binding */ pages),
+/* harmony export */   routeModule: () => (/* binding */ routeModule),
+/* harmony export */   tree: () => (/* binding */ tree)
+/* harmony export */ });
+/* harmony import */ var next_dist_server_future_route_modules_app_page_module_compiled__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next/dist/server/future/route-modules/app-page/module.compiled */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/module.compiled.js?d969");
+/* harmony import */ var next_dist_server_future_route_modules_app_page_module_compiled__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(next_dist_server_future_route_modules_app_page_module_compiled__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var next_dist_server_future_route_kind__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/dist/server/future/route-kind */ "(rsc)/./node_modules/next/dist/server/future/route-kind.js");
+/* harmony import */ var next_dist_client_components_error_boundary__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/dist/client/components/error-boundary */ "(rsc)/./node_modules/next/dist/client/components/error-boundary.js");
+/* harmony import */ var next_dist_client_components_error_boundary__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_dist_client_components_error_boundary__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var next_dist_server_app_render_entry_base__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next/dist/server/app-render/entry-base */ "(rsc)/./node_modules/next/dist/server/app-render/entry-base.js");
+/* harmony import */ var next_dist_server_app_render_entry_base__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_dist_server_app_render_entry_base__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in next_dist_server_app_render_entry_base__WEBPACK_IMPORTED_MODULE_3__) if(["default","tree","pages","GlobalError","originalPathname","__next_app__","routeModule"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => next_dist_server_app_render_entry_base__WEBPACK_IMPORTED_MODULE_3__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+"TURBOPACK { transition: next-ssr }";
+
+
+// We inject the tree and pages here so that we can use them in the route
+// module.
+const tree = {
+        children: [
+        '',
+        {
+        children: [
+        'admin',
+        {
+        children: ['__PAGE__', {}, {
+          page: [() => Promise.resolve(/*! import() eager */).then(__webpack_require__.bind(__webpack_require__, /*! ./app/admin/page.tsx */ "(rsc)/./app/admin/page.tsx")), "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx"],
+          
+        }]
+      },
+        {
+        
+        
+      }
+      ]
+      },
+        {
+        'layout': [() => Promise.resolve(/*! import() eager */).then(__webpack_require__.bind(__webpack_require__, /*! ./app/layout.tsx */ "(rsc)/./app/layout.tsx")), "/home/ubuntu/sully-booking-system/app/app/layout.tsx"],
+'not-found': [() => Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(__webpack_require__, /*! next/dist/client/components/not-found-error */ "(rsc)/./node_modules/next/dist/client/components/not-found-error.js", 23)), "next/dist/client/components/not-found-error"],
+        
+      }
+      ]
+      }.children;
+const pages = ["/home/ubuntu/sully-booking-system/app/app/admin/page.tsx"];
+
+
+const __next_app_require__ = __webpack_require__
+const __next_app_load_chunk__ = () => Promise.resolve()
+const originalPathname = "/admin/page";
+const __next_app__ = {
+    require: __next_app_require__,
+    loadChunk: __next_app_load_chunk__
+};
+
+// Create and export the route module that will be consumed.
+const routeModule = new next_dist_server_future_route_modules_app_page_module_compiled__WEBPACK_IMPORTED_MODULE_0__.AppPageRouteModule({
+    definition: {
+        kind: next_dist_server_future_route_kind__WEBPACK_IMPORTED_MODULE_1__.RouteKind.APP_PAGE,
+        page: "/admin/page",
+        pathname: "/admin",
+        // The following aren't used in production.
+        bundlePath: "",
+        filename: "",
+        appPaths: []
+    },
+    userland: {
+        loaderTree: tree
+    }
+});
+
+//# sourceMappingURL=app-page.js.map
+
+/***/ }),
+
+/***/ "(ssr)/./node_modules/next/dist/build/webpack/loaders/next-flight-client-entry-loader.js?modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fapp%2Fadmin%2Fpage.tsx%22%2C%22ids%22%3A%5B%5D%7D&server=true!":
+/*!**************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/next/dist/build/webpack/loaders/next-flight-client-entry-loader.js?modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fapp%2Fadmin%2Fpage.tsx%22%2C%22ids%22%3A%5B%5D%7D&server=true! ***!
+  \**************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+Promise.resolve(/*! import() eager */).then(__webpack_require__.bind(__webpack_require__, /*! ./app/admin/page.tsx */ "(ssr)/./app/admin/page.tsx"));
+
+
+/***/ }),
+
+/***/ "(ssr)/./node_modules/next/dist/build/webpack/loaders/next-flight-client-entry-loader.js?modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fcomponents%2Fauth-provider.tsx%22%2C%22ids%22%3A%5B%22AuthProvider%22%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Ffont%2Fgoogle%2Ftarget.css%3F%7B%5C%22path%5C%22%3A%5C%22app%2Flayout.tsx%5C%22%2C%5C%22import%5C%22%3A%5C%22Inter%5C%22%2C%5C%22arguments%5C%22%3A%5B%7B%5C%22subsets%5C%22%3A%5B%5C%22latin%5C%22%5D%7D%5D%2C%5C%22variableName%5C%22%3A%5C%22inter%5C%22%7D%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fapp%2Fglobals.css%22%2C%22ids%22%3A%5B%5D%7D&server=true!":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/next/dist/build/webpack/loaders/next-flight-client-entry-loader.js?modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fcomponents%2Fauth-provider.tsx%22%2C%22ids%22%3A%5B%22AuthProvider%22%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Ffont%2Fgoogle%2Ftarget.css%3F%7B%5C%22path%5C%22%3A%5C%22app%2Flayout.tsx%5C%22%2C%5C%22import%5C%22%3A%5C%22Inter%5C%22%2C%5C%22arguments%5C%22%3A%5B%7B%5C%22subsets%5C%22%3A%5B%5C%22latin%5C%22%5D%7D%5D%2C%5C%22variableName%5C%22%3A%5C%22inter%5C%22%7D%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fapp%2Fglobals.css%22%2C%22ids%22%3A%5B%5D%7D&server=true! ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+Promise.resolve(/*! import() eager */).then(__webpack_require__.bind(__webpack_require__, /*! ./components/auth-provider.tsx */ "(ssr)/./components/auth-provider.tsx"));
+
+
+/***/ }),
+
+/***/ "(ssr)/./node_modules/next/dist/build/webpack/loaders/next-flight-client-entry-loader.js?modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fapp-router.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fclient-page.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Ferror-boundary.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Flayout-router.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fnot-found-boundary.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Frender-from-template-context.js%22%2C%22ids%22%3A%5B%5D%7D&server=true!":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/next/dist/build/webpack/loaders/next-flight-client-entry-loader.js?modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fapp-router.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fclient-page.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Ferror-boundary.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Flayout-router.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fnot-found-boundary.js%22%2C%22ids%22%3A%5B%5D%7D&modules=%7B%22request%22%3A%22%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Frender-from-template-context.js%22%2C%22ids%22%3A%5B%5D%7D&server=true! ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(__webpack_require__, /*! ./node_modules/next/dist/client/components/app-router.js */ "(ssr)/./node_modules/next/dist/client/components/app-router.js", 23));
+;
+Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(__webpack_require__, /*! ./node_modules/next/dist/client/components/client-page.js */ "(ssr)/./node_modules/next/dist/client/components/client-page.js", 23));
+;
+Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(__webpack_require__, /*! ./node_modules/next/dist/client/components/error-boundary.js */ "(ssr)/./node_modules/next/dist/client/components/error-boundary.js", 23));
+;
+Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(__webpack_require__, /*! ./node_modules/next/dist/client/components/layout-router.js */ "(ssr)/./node_modules/next/dist/client/components/layout-router.js", 23));
+;
+Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(__webpack_require__, /*! ./node_modules/next/dist/client/components/not-found-boundary.js */ "(ssr)/./node_modules/next/dist/client/components/not-found-boundary.js", 23));
+;
+Promise.resolve(/*! import() eager */).then(__webpack_require__.t.bind(__webpack_require__, /*! ./node_modules/next/dist/client/components/render-from-template-context.js */ "(ssr)/./node_modules/next/dist/client/components/render-from-template-context.js", 23));
+
+
+/***/ }),
+
+/***/ "(ssr)/./app/admin/page.tsx":
+/*!****************************!*\
+  !*** ./app/admin/page.tsx ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AdminPage)
+/* harmony export */ });
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js");
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components_auth_provider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/auth-provider */ "(ssr)/./components/auth-provider.tsx");
+/* harmony import */ var next_navigation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next/navigation */ "(ssr)/./node_modules/next/dist/api/navigation.js");
+/* harmony import */ var _components_ui_card__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/ui/card */ "(ssr)/./components/ui/card.tsx");
+/* harmony import */ var _components_ui_button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/ui/button */ "(ssr)/./components/ui/button.tsx");
+/* harmony import */ var _components_ui_badge__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/ui/badge */ "(ssr)/./components/ui/badge.tsx");
+/* harmony import */ var _barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! __barrel_optimize__?names=Activity,Building,CalendarDays,CreditCard,LayoutDashboard,LogOut,TrendingUp,Users!=!lucide-react */ "(ssr)/./node_modules/lucide-react/dist/esm/icons/calendar-days.js");
+/* harmony import */ var _barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! __barrel_optimize__?names=Activity,Building,CalendarDays,CreditCard,LayoutDashboard,LogOut,TrendingUp,Users!=!lucide-react */ "(ssr)/./node_modules/lucide-react/dist/esm/icons/layout-dashboard.js");
+/* harmony import */ var _barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! __barrel_optimize__?names=Activity,Building,CalendarDays,CreditCard,LayoutDashboard,LogOut,TrendingUp,Users!=!lucide-react */ "(ssr)/./node_modules/lucide-react/dist/esm/icons/log-out.js");
+/* harmony import */ var _barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! __barrel_optimize__?names=Activity,Building,CalendarDays,CreditCard,LayoutDashboard,LogOut,TrendingUp,Users!=!lucide-react */ "(ssr)/./node_modules/lucide-react/dist/esm/icons/users.js");
+/* harmony import */ var _barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! __barrel_optimize__?names=Activity,Building,CalendarDays,CreditCard,LayoutDashboard,LogOut,TrendingUp,Users!=!lucide-react */ "(ssr)/./node_modules/lucide-react/dist/esm/icons/building.js");
+/* harmony import */ var _barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! __barrel_optimize__?names=Activity,Building,CalendarDays,CreditCard,LayoutDashboard,LogOut,TrendingUp,Users!=!lucide-react */ "(ssr)/./node_modules/lucide-react/dist/esm/icons/credit-card.js");
+/* harmony import */ var _barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! __barrel_optimize__?names=Activity,Building,CalendarDays,CreditCard,LayoutDashboard,LogOut,TrendingUp,Users!=!lucide-react */ "(ssr)/./node_modules/lucide-react/dist/esm/icons/trending-up.js");
+/* harmony import */ var _barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! __barrel_optimize__?names=Activity,Building,CalendarDays,CreditCard,LayoutDashboard,LogOut,TrendingUp,Users!=!lucide-react */ "(ssr)/./node_modules/lucide-react/dist/esm/icons/activity.js");
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! next/link */ "(ssr)/./node_modules/next/dist/api/link.js");
+/* harmony import */ var framer_motion__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! framer-motion */ "(ssr)/./node_modules/framer-motion/dist/es/render/dom/motion.mjs");
+/* harmony import */ var _hooks_use_toast__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/hooks/use-toast */ "(ssr)/./hooks/use-toast.ts");
+/* __next_internal_client_entry_do_not_use__ default auto */ 
+
+
+
+
+
+
+
+
+
+
+function AdminPage() {
+    const { user, loading, logout } = (0,_components_auth_provider__WEBPACK_IMPORTED_MODULE_2__.useAuth)();
+    const router = (0,next_navigation__WEBPACK_IMPORTED_MODULE_3__.useRouter)();
+    const { toast } = (0,_hooks_use_toast__WEBPACK_IMPORTED_MODULE_8__.useToast)();
+    const [stats, setStats] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+    const [recentBookings, setRecentBookings] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+    const [recentUsers, setRecentUsers] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+    const [loadingData, setLoadingData] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        if (!loading && (!user || user.role !== "SUPER_ADMIN")) {
+            router.push("/dashboard");
+        }
+    }, [
+        user,
+        loading,
+        router
+    ]);
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        if (user && user.role === "SUPER_ADMIN") {
+            fetchAdminData();
+        }
+    }, [
+        user
+    ]);
+    const fetchAdminData = async ()=>{
+        try {
+            const response = await fetch("/api/admin/stats");
+            if (response.ok) {
+                const data = await response.json();
+                setStats(data.stats);
+                setRecentBookings(data.recentBookings);
+                setRecentUsers(data.recentUsers);
+            }
+        } catch (error) {
+            console.error("Failed to fetch admin data:", error);
+        } finally{
+            setLoadingData(false);
+        }
+    };
+    const handleLogout = async ()=>{
+        try {
+            await logout();
+            toast({
+                title: "Signed out successfully",
+                description: "You have been logged out."
+            });
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to sign out. Please try again.",
+                variant: "destructive"
+            });
+        }
+    };
+    if (loading || !user || user.role !== "SUPER_ADMIN") {
+        return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+            className: "min-h-screen flex items-center justify-center",
+            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                className: "animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"
+            }, void 0, false, {
+                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                lineNumber: 97,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+            lineNumber: 96,
+            columnNumber: 7
+        }, this);
+    }
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+        className: "min-h-screen bg-gray-50",
+        children: [
+            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("header", {
+                className: "bg-white shadow-sm border-b",
+                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                    className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                        className: "flex justify-between items-center h-16",
+                        children: [
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                className: "flex items-center space-x-4",
+                                children: [
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(next_link__WEBPACK_IMPORTED_MODULE_7__["default"], {
+                                        href: "/",
+                                        className: "flex items-center space-x-2",
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_9__["default"], {
+                                                className: "h-8 w-8 text-blue-600"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 110,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("span", {
+                                                className: "text-2xl font-bold text-gray-900",
+                                                children: "Sully"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 111,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 109,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_badge__WEBPACK_IMPORTED_MODULE_6__.Badge, {
+                                        variant: "secondary",
+                                        children: "Admin Panel"
+                                    }, void 0, false, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 113,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 108,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                className: "flex items-center space-x-4",
+                                children: [
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("span", {
+                                        className: "text-sm text-gray-600",
+                                        children: [
+                                            "Welcome, ",
+                                            user.firstName,
+                                            "!"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 116,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_button__WEBPACK_IMPORTED_MODULE_5__.Button, {
+                                        variant: "outline",
+                                        size: "sm",
+                                        onClick: ()=>router.push("/dashboard"),
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_10__["default"], {
+                                                className: "h-4 w-4 mr-2"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 124,
+                                                columnNumber: 17
+                                            }, this),
+                                            "Venue Management"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 119,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_button__WEBPACK_IMPORTED_MODULE_5__.Button, {
+                                        variant: "outline",
+                                        size: "sm",
+                                        onClick: handleLogout,
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_11__["default"], {
+                                                className: "h-4 w-4 mr-2"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 132,
+                                                columnNumber: 17
+                                            }, this),
+                                            "Sign Out"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 127,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 115,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                        lineNumber: 107,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
+                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                    lineNumber: 106,
+                    columnNumber: 9
+                }, this)
+            }, void 0, false, {
+                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                lineNumber: 105,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8",
+                children: [
+                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_12__.motion.div, {
+                        initial: {
+                            opacity: 0,
+                            y: 20
+                        },
+                        animate: {
+                            opacity: 1,
+                            y: 0
+                        },
+                        transition: {
+                            duration: 0.8
+                        },
+                        className: "mb-8",
+                        children: [
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("h1", {
+                                className: "text-3xl font-bold text-gray-900 mb-2",
+                                children: "Admin Dashboard"
+                            }, void 0, false, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 148,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                className: "text-gray-600",
+                                children: "Monitor and manage the entire Sully booking system"
+                            }, void 0, false, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 151,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                        lineNumber: 142,
+                        columnNumber: 9
+                    }, this),
+                    loadingData ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                        className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8",
+                        children: [
+                            1,
+                            2,
+                            3,
+                            4
+                        ].map((i)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                className: "animate-pulse",
+                                children: [
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                        className: "flex flex-row items-center justify-between space-y-0 pb-2",
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "h-4 bg-gray-200 rounded w-1/2"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 162,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "h-4 w-4 bg-gray-200 rounded"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 163,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 161,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "h-8 bg-gray-200 rounded w-1/3 mb-2"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 166,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "h-3 bg-gray-200 rounded w-2/3"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 167,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 165,
+                                        columnNumber: 17
+                                    }, this)
+                                ]
+                            }, i, true, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 160,
+                                columnNumber: 15
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                        lineNumber: 158,
+                        columnNumber: 11
+                    }, this) : /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_12__.motion.div, {
+                        initial: {
+                            opacity: 0,
+                            y: 20
+                        },
+                        animate: {
+                            opacity: 1,
+                            y: 0
+                        },
+                        transition: {
+                            duration: 0.8,
+                            delay: 0.1
+                        },
+                        className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8",
+                        children: [
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                children: [
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                        className: "flex flex-row items-center justify-between space-y-0 pb-2",
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                className: "text-sm font-medium",
+                                                children: "Total Users"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 181,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_13__["default"], {
+                                                className: "h-4 w-4 text-muted-foreground"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 182,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 180,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "text-2xl font-bold",
+                                                children: stats?.totalUsers || 0
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 185,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-xs text-muted-foreground",
+                                                children: "Registered users"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 186,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 184,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 179,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                children: [
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                        className: "flex flex-row items-center justify-between space-y-0 pb-2",
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                className: "text-sm font-medium",
+                                                children: "Total Venues"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 194,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_14__["default"], {
+                                                className: "h-4 w-4 text-muted-foreground"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 195,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 193,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "text-2xl font-bold",
+                                                children: stats?.totalVenues || 0
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 198,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-xs text-muted-foreground",
+                                                children: "Active venues"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 199,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 197,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 192,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                children: [
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                        className: "flex flex-row items-center justify-between space-y-0 pb-2",
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                className: "text-sm font-medium",
+                                                children: "Total Bookings"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 207,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_9__["default"], {
+                                                className: "h-4 w-4 text-muted-foreground"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 208,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 206,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "text-2xl font-bold",
+                                                children: stats?.totalBookings || 0
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 211,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-xs text-muted-foreground",
+                                                children: "All time bookings"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 212,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 210,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 205,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                children: [
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                        className: "flex flex-row items-center justify-between space-y-0 pb-2",
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                className: "text-sm font-medium",
+                                                children: "Active Subscriptions"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 220,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_15__["default"], {
+                                                className: "h-4 w-4 text-muted-foreground"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 221,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 219,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "text-2xl font-bold",
+                                                children: stats?.activeSubscriptions || 0
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 224,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-xs text-muted-foreground",
+                                                children: "Paying customers"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 225,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 223,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 218,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                        lineNumber: 173,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_12__.motion.div, {
+                        initial: {
+                            opacity: 0,
+                            y: 20
+                        },
+                        animate: {
+                            opacity: 1,
+                            y: 0
+                        },
+                        transition: {
+                            duration: 0.8,
+                            delay: 0.2
+                        },
+                        className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8",
+                        children: [
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(next_link__WEBPACK_IMPORTED_MODULE_7__["default"], {
+                                href: "/admin/users",
+                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                    className: "hover:shadow-lg transition-shadow cursor-pointer group",
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                            className: "flex flex-row items-center space-y-0 pb-2",
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                    className: "text-sm font-medium",
+                                                    children: "Manage Users"
+                                                }, void 0, false, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 243,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_13__["default"], {
+                                                    className: "h-4 w-4 ml-auto text-blue-600 group-hover:scale-110 transition-transform"
+                                                }, void 0, false, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 244,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 242,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-xs text-muted-foreground",
+                                                children: "View, enable/disable, and manage all system users"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 247,
+                                                columnNumber: 17
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 246,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                    lineNumber: 241,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 240,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(next_link__WEBPACK_IMPORTED_MODULE_7__["default"], {
+                                href: "/admin/venues",
+                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                    className: "hover:shadow-lg transition-shadow cursor-pointer group",
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                            className: "flex flex-row items-center space-y-0 pb-2",
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                    className: "text-sm font-medium",
+                                                    children: "Manage Venues"
+                                                }, void 0, false, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 257,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_14__["default"], {
+                                                    className: "h-4 w-4 ml-auto text-green-600 group-hover:scale-110 transition-transform"
+                                                }, void 0, false, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 258,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 256,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-xs text-muted-foreground",
+                                                children: "Oversee all venues, owners, and venue settings"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 261,
+                                                columnNumber: 17
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 260,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                    lineNumber: 255,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 254,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                className: "opacity-50 cursor-not-allowed",
+                                children: [
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                        className: "flex flex-row items-center space-y-0 pb-2",
+                                        children: [
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                className: "text-sm font-medium",
+                                                children: "System Analytics"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 270,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_16__["default"], {
+                                                className: "h-4 w-4 ml-auto text-purple-600"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 271,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 269,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                            className: "text-xs text-muted-foreground",
+                                            children: "Advanced analytics coming soon"
+                                        }, void 0, false, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 274,
+                                            columnNumber: 15
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                        lineNumber: 273,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 268,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(next_link__WEBPACK_IMPORTED_MODULE_7__["default"], {
+                                href: "/admin/system",
+                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                    className: "hover:shadow-lg transition-shadow cursor-pointer group",
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                            className: "flex flex-row items-center space-y-0 pb-2",
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                    className: "text-sm font-medium",
+                                                    children: "System Settings"
+                                                }, void 0, false, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 283,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_17__["default"], {
+                                                    className: "h-4 w-4 ml-auto text-orange-600 group-hover:scale-110 transition-transform"
+                                                }, void 0, false, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 284,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 282,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-xs text-muted-foreground",
+                                                children: "Configure system settings and platform options"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 287,
+                                                columnNumber: 17
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 286,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                    lineNumber: 281,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 280,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                        lineNumber: 234,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                        className: "grid grid-cols-1 lg:grid-cols-2 gap-6",
+                        children: [
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_12__.motion.div, {
+                                initial: {
+                                    opacity: 0,
+                                    y: 20
+                                },
+                                animate: {
+                                    opacity: 1,
+                                    y: 0
+                                },
+                                transition: {
+                                    duration: 0.8,
+                                    delay: 0.3
+                                },
+                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                    className: "flex items-center space-x-2",
+                                                    children: [
+                                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_17__["default"], {
+                                                            className: "h-5 w-5"
+                                                        }, void 0, false, {
+                                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                            lineNumber: 306,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("span", {
+                                                            children: "Recent Bookings"
+                                                        }, void 0, false, {
+                                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                            lineNumber: 307,
+                                                            columnNumber: 19
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 305,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardDescription, {
+                                                    children: "Latest booking activity across all venues"
+                                                }, void 0, false, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 309,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 304,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                            children: recentBookings.length === 0 ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-sm text-gray-500 text-center py-4",
+                                                children: "No recent bookings"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 313,
+                                                columnNumber: 19
+                                            }, this) : /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "space-y-3",
+                                                children: recentBookings.map((booking)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                        className: "flex items-center justify-between p-3 bg-gray-50 rounded-lg",
+                                                        children: [
+                                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                                        className: "font-medium text-sm",
+                                                                        children: booking.customerName
+                                                                    }, void 0, false, {
+                                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                        lineNumber: 321,
+                                                                        columnNumber: 27
+                                                                    }, this),
+                                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                                        className: "text-xs text-gray-600",
+                                                                        children: booking.venue.name
+                                                                    }, void 0, false, {
+                                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                        lineNumber: 322,
+                                                                        columnNumber: 27
+                                                                    }, this)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                lineNumber: 320,
+                                                                columnNumber: 25
+                                                            }, this),
+                                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                                className: "text-right",
+                                                                children: [
+                                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_badge__WEBPACK_IMPORTED_MODULE_6__.Badge, {
+                                                                        variant: "outline",
+                                                                        className: "text-xs",
+                                                                        children: booking.status
+                                                                    }, void 0, false, {
+                                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                        lineNumber: 325,
+                                                                        columnNumber: 27
+                                                                    }, this),
+                                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                                        className: "text-xs text-gray-600 mt-1",
+                                                                        children: new Date(booking.date).toLocaleDateString()
+                                                                    }, void 0, false, {
+                                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                        lineNumber: 328,
+                                                                        columnNumber: 27
+                                                                    }, this)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                lineNumber: 324,
+                                                                columnNumber: 25
+                                                            }, this)
+                                                        ]
+                                                    }, booking.id, true, {
+                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                        lineNumber: 319,
+                                                        columnNumber: 23
+                                                    }, this))
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 317,
+                                                columnNumber: 19
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 311,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                    lineNumber: 303,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 298,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_12__.motion.div, {
+                                initial: {
+                                    opacity: 0,
+                                    y: 20
+                                },
+                                animate: {
+                                    opacity: 1,
+                                    y: 0
+                                },
+                                transition: {
+                                    duration: 0.8,
+                                    delay: 0.4
+                                },
+                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.Card, {
+                                    children: [
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                                            children: [
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardTitle, {
+                                                    className: "flex items-center space-x-2",
+                                                    children: [
+                                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_Activity_Building_CalendarDays_CreditCard_LayoutDashboard_LogOut_TrendingUp_Users_lucide_react__WEBPACK_IMPORTED_MODULE_13__["default"], {
+                                                            className: "h-5 w-5"
+                                                        }, void 0, false, {
+                                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                            lineNumber: 349,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("span", {
+                                                            children: "Recent Users"
+                                                        }, void 0, false, {
+                                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                            lineNumber: 350,
+                                                            columnNumber: 19
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 348,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardDescription, {
+                                                    children: "Newly registered users"
+                                                }, void 0, false, {
+                                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                    lineNumber: 352,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 347,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_card__WEBPACK_IMPORTED_MODULE_4__.CardContent, {
+                                            children: recentUsers.length === 0 ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                className: "text-sm text-gray-500 text-center py-4",
+                                                children: "No recent users"
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 356,
+                                                columnNumber: 19
+                                            }, this) : /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                className: "space-y-3",
+                                                children: recentUsers.map((user)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                        className: "flex items-center justify-between p-3 bg-gray-50 rounded-lg",
+                                                        children: [
+                                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                                        className: "font-medium text-sm",
+                                                                        children: [
+                                                                            user.firstName,
+                                                                            " ",
+                                                                            user.lastName
+                                                                        ]
+                                                                    }, void 0, true, {
+                                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                        lineNumber: 364,
+                                                                        columnNumber: 27
+                                                                    }, this),
+                                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                                        className: "text-xs text-gray-600",
+                                                                        children: user.email
+                                                                    }, void 0, false, {
+                                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                        lineNumber: 365,
+                                                                        columnNumber: 27
+                                                                    }, this)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                lineNumber: 363,
+                                                                columnNumber: 25
+                                                            }, this),
+                                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+                                                                className: "text-right",
+                                                                children: [
+                                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_ui_badge__WEBPACK_IMPORTED_MODULE_6__.Badge, {
+                                                                        variant: "outline",
+                                                                        className: "text-xs",
+                                                                        children: user.role
+                                                                    }, void 0, false, {
+                                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                        lineNumber: 368,
+                                                                        columnNumber: 27
+                                                                    }, this),
+                                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+                                                                        className: "text-xs text-gray-600 mt-1",
+                                                                        children: new Date(user.createdAt).toLocaleDateString()
+                                                                    }, void 0, false, {
+                                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                        lineNumber: 371,
+                                                                        columnNumber: 27
+                                                                    }, this)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                                lineNumber: 367,
+                                                                columnNumber: 25
+                                                            }, this)
+                                                        ]
+                                                    }, user.id, true, {
+                                                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                        lineNumber: 362,
+                                                        columnNumber: 23
+                                                    }, this))
+                                            }, void 0, false, {
+                                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                                lineNumber: 360,
+                                                columnNumber: 19
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                            lineNumber: 354,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                    lineNumber: 346,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                                lineNumber: 341,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                        lineNumber: 296,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+                lineNumber: 140,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "/home/ubuntu/sully-booking-system/app/app/admin/page.tsx",
+        lineNumber: 103,
+        columnNumber: 5
+    }, this);
+}
+
+
+/***/ }),
+
+/***/ "(ssr)/./components/auth-provider.tsx":
+/*!**************************************!*\
+  !*** ./components/auth-provider.tsx ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AuthProvider: () => (/* binding */ AuthProvider),
+/* harmony export */   useAuth: () => (/* binding */ useAuth)
+/* harmony export */ });
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js");
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* __next_internal_client_entry_do_not_use__ AuthProvider,useAuth auto */ 
+
+const AuthContext = /*#__PURE__*/ (0,react__WEBPACK_IMPORTED_MODULE_1__.createContext)(undefined);
+function AuthProvider({ children }) {
+    const [user, setUser] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+    const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        // Simulate checking for existing session
+        setLoading(false);
+    }, []);
+    const login = async (email, password)=>{
+        // Simplified login - just return false for now
+        return false;
+    };
+    const logout = ()=>{
+        setUser(null);
+    };
+    const register = async (userData)=>{
+        // Simplified register - just return false for now
+        return false;
+    };
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(AuthContext.Provider, {
+        value: {
+            user,
+            loading,
+            login,
+            logout,
+            register
+        },
+        children: children
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/auth-provider.tsx",
+        lineNumber: 47,
+        columnNumber: 5
+    }, this);
+}
+function useAuth() {
+    const context = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(AuthContext);
+    if (context === undefined) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+    return context;
+}
+
+
+/***/ }),
+
+/***/ "(ssr)/./components/ui/badge.tsx":
+/*!*********************************!*\
+  !*** ./components/ui/badge.tsx ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Badge: () => (/* binding */ Badge),
+/* harmony export */   badgeVariants: () => (/* binding */ badgeVariants)
+/* harmony export */ });
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js");
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var class_variance_authority__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! class-variance-authority */ "(ssr)/./node_modules/class-variance-authority/dist/index.mjs");
+/* harmony import */ var _lib_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/lib/utils */ "(ssr)/./lib/utils.ts");
+
+
+
+
+const badgeVariants = (0,class_variance_authority__WEBPACK_IMPORTED_MODULE_2__.cva)("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", {
+    variants: {
+        variant: {
+            default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+            secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+            destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+            outline: "text-foreground"
+        }
+    },
+    defaultVariants: {
+        variant: "default"
+    }
+});
+function Badge({ className, variant, ...props }) {
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_3__.cn)(badgeVariants({
+            variant
+        }), className),
+        ...props
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/ui/badge.tsx",
+        lineNumber: 33,
+        columnNumber: 5
+    }, this);
+}
+
+
+
+/***/ }),
+
+/***/ "(ssr)/./components/ui/button.tsx":
+/*!**********************************!*\
+  !*** ./components/ui/button.tsx ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Button: () => (/* binding */ Button),
+/* harmony export */   buttonVariants: () => (/* binding */ buttonVariants)
+/* harmony export */ });
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js");
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _radix_ui_react_slot__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @radix-ui/react-slot */ "(ssr)/./node_modules/@radix-ui/react-slot/dist/index.mjs");
+/* harmony import */ var class_variance_authority__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! class-variance-authority */ "(ssr)/./node_modules/class-variance-authority/dist/index.mjs");
+/* harmony import */ var _lib_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/lib/utils */ "(ssr)/./lib/utils.ts");
+
+
+
+
+
+const buttonVariants = (0,class_variance_authority__WEBPACK_IMPORTED_MODULE_2__.cva)("inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50", {
+    variants: {
+        variant: {
+            default: "bg-primary text-primary-foreground hover:bg-primary/90",
+            destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+            outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+            secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+            ghost: "hover:bg-accent hover:text-accent-foreground",
+            link: "text-primary underline-offset-4 hover:underline"
+        },
+        size: {
+            default: "h-10 px-4 py-2",
+            sm: "h-9 rounded-md px-3",
+            lg: "h-11 rounded-md px-8",
+            icon: "h-10 w-10"
+        }
+    },
+    defaultVariants: {
+        variant: "default",
+        size: "default"
+    }
+});
+const Button = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({ className, variant, size, asChild = false, ...props }, ref)=>{
+    const Comp = asChild ? _radix_ui_react_slot__WEBPACK_IMPORTED_MODULE_4__.Slot : "button";
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(Comp, {
+        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_3__.cn)(buttonVariants({
+            variant,
+            size,
+            className
+        })),
+        ref: ref,
+        ...props
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/ui/button.tsx",
+        lineNumber: 47,
+        columnNumber: 7
+    }, undefined);
+});
+Button.displayName = "Button";
+
+
+
+/***/ }),
+
+/***/ "(ssr)/./components/ui/card.tsx":
+/*!********************************!*\
+  !*** ./components/ui/card.tsx ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Card: () => (/* binding */ Card),
+/* harmony export */   CardContent: () => (/* binding */ CardContent),
+/* harmony export */   CardDescription: () => (/* binding */ CardDescription),
+/* harmony export */   CardFooter: () => (/* binding */ CardFooter),
+/* harmony export */   CardHeader: () => (/* binding */ CardHeader),
+/* harmony export */   CardTitle: () => (/* binding */ CardTitle)
+/* harmony export */ });
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js");
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _lib_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/lib/utils */ "(ssr)/./lib/utils.ts");
+
+
+
+const Card = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({ className, ...props }, ref)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+        ref: ref,
+        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("rounded-lg border bg-card text-card-foreground shadow-sm", className),
+        ...props
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/ui/card.tsx",
+        lineNumber: 10,
+        columnNumber: 3
+    }, undefined));
+Card.displayName = "Card";
+const CardHeader = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({ className, ...props }, ref)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+        ref: ref,
+        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("flex flex-col space-y-1.5 p-6", className),
+        ...props
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/ui/card.tsx",
+        lineNumber: 25,
+        columnNumber: 3
+    }, undefined));
+CardHeader.displayName = "CardHeader";
+const CardTitle = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({ className, ...props }, ref)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("h3", {
+        ref: ref,
+        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("text-2xl font-semibold leading-none tracking-tight", className),
+        ...props
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/ui/card.tsx",
+        lineNumber: 37,
+        columnNumber: 3
+    }, undefined));
+CardTitle.displayName = "CardTitle";
+const CardDescription = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({ className, ...props }, ref)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("p", {
+        ref: ref,
+        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("text-sm text-muted-foreground", className),
+        ...props
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/ui/card.tsx",
+        lineNumber: 52,
+        columnNumber: 3
+    }, undefined));
+CardDescription.displayName = "CardDescription";
+const CardContent = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({ className, ...props }, ref)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+        ref: ref,
+        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("p-6 pt-0", className),
+        ...props
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/ui/card.tsx",
+        lineNumber: 64,
+        columnNumber: 3
+    }, undefined));
+CardContent.displayName = "CardContent";
+const CardFooter = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({ className, ...props }, ref)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("div", {
+        ref: ref,
+        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("flex items-center p-6 pt-0", className),
+        ...props
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/components/ui/card.tsx",
+        lineNumber: 72,
+        columnNumber: 3
+    }, undefined));
+CardFooter.displayName = "CardFooter";
+
+
+
+/***/ }),
+
+/***/ "(ssr)/./hooks/use-toast.ts":
+/*!****************************!*\
+  !*** ./hooks/use-toast.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   reducer: () => (/* binding */ reducer),
+/* harmony export */   toast: () => (/* binding */ toast),
+/* harmony export */   useToast: () => (/* binding */ useToast)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* __next_internal_client_entry_do_not_use__ reducer,useToast,toast auto */ // Inspired by react-hot-toast library
+
+const TOAST_LIMIT = 1;
+const TOAST_REMOVE_DELAY = 1000000;
+const actionTypes = {
+    ADD_TOAST: "ADD_TOAST",
+    UPDATE_TOAST: "UPDATE_TOAST",
+    DISMISS_TOAST: "DISMISS_TOAST",
+    REMOVE_TOAST: "REMOVE_TOAST"
+};
+let count = 0;
+function genId() {
+    count = (count + 1) % Number.MAX_SAFE_INTEGER;
+    return count.toString();
+}
+const toastTimeouts = new Map();
+const addToRemoveQueue = (toastId)=>{
+    if (toastTimeouts.has(toastId)) {
+        return;
+    }
+    const timeout = setTimeout(()=>{
+        toastTimeouts.delete(toastId);
+        dispatch({
+            type: "REMOVE_TOAST",
+            toastId: toastId
+        });
+    }, TOAST_REMOVE_DELAY);
+    toastTimeouts.set(toastId, timeout);
+};
+const reducer = (state, action)=>{
+    switch(action.type){
+        case "ADD_TOAST":
+            return {
+                ...state,
+                toasts: [
+                    action.toast,
+                    ...state.toasts
+                ].slice(0, TOAST_LIMIT)
+            };
+        case "UPDATE_TOAST":
+            return {
+                ...state,
+                toasts: state.toasts.map((t)=>t.id === action.toast.id ? {
+                        ...t,
+                        ...action.toast
+                    } : t)
+            };
+        case "DISMISS_TOAST":
+            {
+                const { toastId } = action;
+                // ! Side effects ! - This could be extracted into a dismissToast() action,
+                // but I'll keep it here for simplicity
+                if (toastId) {
+                    addToRemoveQueue(toastId);
+                } else {
+                    state.toasts.forEach((toast)=>{
+                        addToRemoveQueue(toast.id);
+                    });
+                }
+                return {
+                    ...state,
+                    toasts: state.toasts.map((t)=>t.id === toastId || toastId === undefined ? {
+                            ...t,
+                            open: false
+                        } : t)
+                };
+            }
+        case "REMOVE_TOAST":
+            if (action.toastId === undefined) {
+                return {
+                    ...state,
+                    toasts: []
+                };
+            }
+            return {
+                ...state,
+                toasts: state.toasts.filter((t)=>t.id !== action.toastId)
+            };
+    }
+};
+const listeners = [];
+let memoryState = {
+    toasts: []
+};
+function dispatch(action) {
+    memoryState = reducer(memoryState, action);
+    listeners.forEach((listener)=>{
+        listener(memoryState);
+    });
+}
+function toast({ ...props }) {
+    const id = genId();
+    const update = (props)=>dispatch({
+            type: "UPDATE_TOAST",
+            toast: {
+                ...props,
+                id
+            }
+        });
+    const dismiss = ()=>dispatch({
+            type: "DISMISS_TOAST",
+            toastId: id
+        });
+    dispatch({
+        type: "ADD_TOAST",
+        toast: {
+            ...props,
+            id,
+            open: true,
+            onOpenChange: (open)=>{
+                if (!open) dismiss();
+            }
+        }
+    });
+    return {
+        id: id,
+        dismiss,
+        update
+    };
+}
+function useToast() {
+    const [state, setState] = react__WEBPACK_IMPORTED_MODULE_0__.useState(memoryState);
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(()=>{
+        listeners.push(setState);
+        return ()=>{
+            const index = listeners.indexOf(setState);
+            if (index > -1) {
+                listeners.splice(index, 1);
+            }
+        };
+    }, [
+        state
+    ]);
+    return {
+        ...state,
+        toast,
+        dismiss: (toastId)=>dispatch({
+                type: "DISMISS_TOAST",
+                toastId
+            })
+    };
+}
+
+
+
+/***/ }),
+
+/***/ "(ssr)/./lib/utils.ts":
+/*!**********************!*\
+  !*** ./lib/utils.ts ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   cn: () => (/* binding */ cn),
+/* harmony export */   formatDuration: () => (/* binding */ formatDuration)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "(ssr)/./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var tailwind_merge__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! tailwind-merge */ "(ssr)/./node_modules/tailwind-merge/dist/bundle-mjs.mjs");
+
+
+function cn(...inputs) {
+    return (0,tailwind_merge__WEBPACK_IMPORTED_MODULE_1__.twMerge)((0,clsx__WEBPACK_IMPORTED_MODULE_0__.clsx)(inputs));
+}
+function formatDuration(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor(seconds % 3600 / 60);
+    const remainingSeconds = seconds % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+}
+
+
+/***/ }),
+
+/***/ "(rsc)/./app/globals.css":
+/*!*************************!*\
+  !*** ./app/globals.css ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("d2b91738ad1e");
+if (false) {}
+
+
+/***/ }),
+
+/***/ "(rsc)/./app/admin/page.tsx":
+/*!****************************!*\
+  !*** ./app/admin/page.tsx ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next/dist/build/webpack/loaders/next-flight-loader/module-proxy */ "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-loader/module-proxy.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__.createProxy)(String.raw`/home/ubuntu/sully-booking-system/app/app/admin/page.tsx#default`));
+
+
+/***/ }),
+
+/***/ "(rsc)/./app/layout.tsx":
+/*!************************!*\
+  !*** ./app/layout.tsx ***!
+  \************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ RootLayout),
+/* harmony export */   metadata: () => (/* binding */ metadata)
+/* harmony export */ });
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ "(rsc)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.js");
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var next_font_google_target_css_path_app_layout_tsx_import_Inter_arguments_subsets_latin_variableName_inter___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next/font/google/target.css?{"path":"app/layout.tsx","import":"Inter","arguments":[{"subsets":["latin"]}],"variableName":"inter"} */ "(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"app/layout.tsx\",\"import\":\"Inter\",\"arguments\":[{\"subsets\":[\"latin\"]}],\"variableName\":\"inter\"}");
+/* harmony import */ var next_font_google_target_css_path_app_layout_tsx_import_Inter_arguments_subsets_latin_variableName_inter___WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_font_google_target_css_path_app_layout_tsx_import_Inter_arguments_subsets_latin_variableName_inter___WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _globals_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./globals.css */ "(rsc)/./app/globals.css");
+/* harmony import */ var _components_auth_provider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/auth-provider */ "(rsc)/./components/auth-provider.tsx");
+
+
+
+
+const metadata = {
+    title: "Sully Booking System",
+    description: "Complete booking management system for restaurants, cafes, bars, and venues",
+    keywords: "booking system, restaurant reservations, table booking, venue management"
+};
+function RootLayout({ children }) {
+    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("html", {
+        lang: "en",
+        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)("body", {
+            className: (next_font_google_target_css_path_app_layout_tsx_import_Inter_arguments_subsets_latin_variableName_inter___WEBPACK_IMPORTED_MODULE_3___default().className),
+            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_auth_provider__WEBPACK_IMPORTED_MODULE_2__.AuthProvider, {
+                children: children
+            }, void 0, false, {
+                fileName: "/home/ubuntu/sully-booking-system/app/app/layout.tsx",
+                lineNumber: 23,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "/home/ubuntu/sully-booking-system/app/app/layout.tsx",
+            lineNumber: 22,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "/home/ubuntu/sully-booking-system/app/app/layout.tsx",
+        lineNumber: 21,
+        columnNumber: 5
+    }, this);
+}
+
+
+/***/ }),
+
+/***/ "(rsc)/./components/auth-provider.tsx":
+/*!**************************************!*\
+  !*** ./components/auth-provider.tsx ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AuthProvider: () => (/* binding */ e0),
+/* harmony export */   useAuth: () => (/* binding */ e1)
+/* harmony export */ });
+/* harmony import */ var next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next/dist/build/webpack/loaders/next-flight-loader/module-proxy */ "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-loader/module-proxy.js");
+
+
+const e0 = (0,next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__.createProxy)(String.raw`/home/ubuntu/sully-booking-system/app/components/auth-provider.tsx#AuthProvider`);
+
+const e1 = (0,next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__.createProxy)(String.raw`/home/ubuntu/sully-booking-system/app/components/auth-provider.tsx#useAuth`);
+
+
+/***/ })
+
+};
+;
+
+// load runtime
+var __webpack_require__ = require("../../webpack-runtime.js");
+__webpack_require__.C(exports);
+var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
+var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next","vendor-chunks/@swc","vendor-chunks/framer-motion","vendor-chunks/lucide-react","vendor-chunks/class-variance-authority","vendor-chunks/@radix-ui","vendor-chunks/tailwind-merge","vendor-chunks/clsx"], () => (__webpack_exec__("(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fadmin%2Fpage&page=%2Fadmin%2Fpage&appPaths=%2Fadmin%2Fpage&pagePath=private-next-app-dir%2Fadmin%2Fpage.tsx&appDir=%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2Fhome%2Fubuntu%2Fsully-booking-system%2Fapp&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D!")));
+module.exports = __webpack_exports__;
+
+})();
