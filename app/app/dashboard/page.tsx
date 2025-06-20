@@ -2,16 +2,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/auth-provider';
+import { useAuth } from "../../components/auth-provider";
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
 import { CalendarDays, Users, TrendingUp, Plus, Settings, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { SubscriptionBanner } from '@/components/subscription-banner';
-import { useSubscription } from '@/hooks/use-subscription';
+import { SubscriptionBanner } from "../../components/subscription-banner";
+import { useSubscription } from "../../hooks/use-subscription";
 
 interface Venue {
   id: string;

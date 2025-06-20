@@ -4,13 +4,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { CalendarDays, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '@/components/auth-provider';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from "../../../components/auth-provider";
+import { useToast } from "../../../hooks/use-toast";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({

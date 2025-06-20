@@ -2,12 +2,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/auth-provider';
+import { useAuth } from "../../../components/auth-provider";
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
+import { Badge } from "../../../components/ui/badge";
+import { Alert, AlertDescription } from "../../../components/ui/alert";
 import { CalendarDays, Users, Plus, Settings, BarChart3, ArrowLeft, Crown, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';

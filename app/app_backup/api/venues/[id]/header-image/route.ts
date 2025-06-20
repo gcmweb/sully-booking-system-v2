@@ -2,8 +2,8 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { checkImageUploadPermissions } from '@/lib/subscription';
+import { prisma } from "../../../../../lib/db";
+import { checkImageUploadPermissions } from "../../../../../lib/subscription";
 
 // Update venue header image
 export async function PUT(

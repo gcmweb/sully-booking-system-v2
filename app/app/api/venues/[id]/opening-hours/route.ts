@@ -1,8 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { requireAuth } from '@/lib/auth';
-import { venueOpeningHoursSchema } from '@/lib/validations';
+import { prisma } from "../../../../../lib/db";
+import { requireAuth } from "../../../../../lib/auth";
+import { venueOpeningHoursSchema } from "../../../../../lib/validations";
 
 export const dynamic = 'force-dynamic';
 

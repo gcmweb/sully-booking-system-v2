@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getStripeConfig } from '@/lib/stripe-live';
+import { getStripeConfig } from "../../../../lib/stripe-live";
 
 export const dynamic = 'force-dynamic';
 

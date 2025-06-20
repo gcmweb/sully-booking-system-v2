@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { prisma } from "../../../../../lib/db";
 import { PaymentStatus } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';

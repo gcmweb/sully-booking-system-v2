@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/components/auth-provider';
+import { useAuth } from "../components/auth-provider";
 
 interface FeaturedVenue {
   id: string;

@@ -1,8 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { verifyPassword, createSession, setAuthCookie } from '@/lib/auth';
-import { loginSchema } from '@/lib/validations';
+import { prisma } from "../../../../lib/db";
+import { verifyPassword, createSession, setAuthCookie } from "../../../../lib/auth";
+import { loginSchema } from "../../../../lib/validations";
 
 export const dynamic = 'force-dynamic';
 

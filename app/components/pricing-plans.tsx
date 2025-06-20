@@ -2,13 +2,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 import { Check, Crown, Zap, Star, Loader2 } from 'lucide-react';
 import { SubscriptionPlan } from '@prisma/client';
-import { SUBSCRIPTION_PRICING } from '@/lib/stripe';
-import { getSubscriptionFeatures } from '@/lib/subscription-utils';
+import { SUBSCRIPTION_PRICING } from "../lib/stripe";
+import { getSubscriptionFeatures } from "../lib/subscription-utils";
 
 interface PricingPlansProps {
   currentPlan: SubscriptionPlan;

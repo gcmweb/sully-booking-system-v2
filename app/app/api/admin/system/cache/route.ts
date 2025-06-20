@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth } from "../../../../../lib/auth";
 import { UserRole } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';

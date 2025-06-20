@@ -1,8 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromToken } from '@/lib/auth';
-import { getUserSubscription, cancelUserSubscription } from '@/lib/subscription-utils';
-import { cancelSubscription } from '@/lib/stripe';
+import { getUserFromToken } from "../../../../lib/auth";
+import { getUserSubscription, cancelUserSubscription } from "../../../../lib/subscription-utils";
+import { cancelSubscription } from "../../../../lib/stripe";
 
 export const dynamic = 'force-dynamic';
 

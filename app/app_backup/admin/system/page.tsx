@@ -2,16 +2,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/auth-provider';
+import { useAuth } from "../../../components/auth-provider";
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
+import { Badge } from "../../../components/ui/badge";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import { Switch } from "../../../components/ui/switch";
+import { Textarea } from "../../../components/ui/textarea";
+import { Separator } from "../../../components/ui/separator";
 import { ArrowLeft, Settings, Database, Mail, Shield, Globe, Server } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';

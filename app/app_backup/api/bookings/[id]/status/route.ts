@@ -1,9 +1,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { requireAuth } from '@/lib/auth';
+import { prisma } from "../../../../../lib/db";
+import { requireAuth } from "../../../../../lib/auth";
 import { BookingStatus, NotificationType } from '@prisma/client';
-import { createNotification } from '@/lib/notifications';
+import { createNotification } from "../../../../../lib/notifications";
 
 export const dynamic = 'force-dynamic';
 

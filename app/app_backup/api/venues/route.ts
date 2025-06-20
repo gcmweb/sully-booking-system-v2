@@ -1,9 +1,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { requireAuth } from '@/lib/auth';
-import { venueSchema } from '@/lib/validations';
-import { checkVenueCreationLimits } from '@/lib/subscription';
+import { prisma } from "../../../lib/db";
+import { requireAuth } from "../../../lib/auth";
+import { venueSchema } from "../../../lib/validations";
+import { checkVenueCreationLimits } from "../../../lib/subscription";
 import { UserRole, SubscriptionPlan, SubscriptionStatus } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';

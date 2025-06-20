@@ -2,8 +2,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from "./ui/alert";
+import { Button } from "./ui/button";
 import { Crown, AlertTriangle, X } from 'lucide-react';
 import { SubscriptionPlan } from '@prisma/client';
 import Link from 'next/link';

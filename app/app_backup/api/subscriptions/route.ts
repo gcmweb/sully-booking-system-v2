@@ -1,8 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromToken } from '@/lib/auth';
-import { getUserSubscription } from '@/lib/subscription-utils';
-import { getUserSubscriptionSummary } from '@/lib/subscription';
+import { getUserFromToken } from "../../../lib/auth";
+import { getUserSubscription } from "../../../lib/subscription-utils";
+import { getUserSubscriptionSummary } from "../../../lib/subscription";
 
 export const dynamic = 'force-dynamic';
 

@@ -2,22 +2,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/auth-provider';
+import { useAuth } from "../../../../components/auth-provider";
 import { useRouter, useParams } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Button } from "../../../../components/ui/button";
+import { Badge } from "../../../../components/ui/badge";
+import { Input } from "../../../../components/ui/input";
+import { Label } from "../../../../components/ui/label";
+import { Textarea } from "../../../../components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
+import { Switch } from "../../../../components/ui/switch";
 import { CalendarDays, ArrowLeft, Save, Settings, Users, MapPin, Phone, Mail, Globe, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useToast } from '@/hooks/use-toast';
-import OpeningHoursManager from '@/components/opening-hours-manager';
-import VenueImageManager from '@/components/venue-image-manager';
+import { useToast } from "../../../../hooks/use-toast";
+import OpeningHoursManager from "../../../../components/opening-hours-manager";
+import VenueImageManager from "../../../../components/venue-image-manager";
 
 interface Venue {
   id: string;

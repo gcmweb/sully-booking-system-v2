@@ -1,7 +1,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { createPaymentIntent, validateStripeConfig } from '@/lib/stripe-live';
+import { prisma } from "../../../../../lib/db";
+import { createPaymentIntent, validateStripeConfig } from "../../../../../lib/stripe-live";
 
 export const dynamic = 'force-dynamic';
 

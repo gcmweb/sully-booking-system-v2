@@ -4,8 +4,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
 import { 
   CalendarDays, 
   Users, 
@@ -21,8 +21,8 @@ import {
   CreditCard,
   Shield
 } from 'lucide-react';
-import { useAuth } from '@/components/auth-provider';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from "../../components/auth-provider";
+import { useToast } from "../../hooks/use-toast";
 
 interface Notification {
   id: string;

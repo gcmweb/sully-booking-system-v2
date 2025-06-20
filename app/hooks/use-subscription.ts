@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { SubscriptionPlan } from '@prisma/client';
-import { useAuth } from '@/components/auth-provider';
+import { useAuth } from "../components/auth-provider";
 
 interface SubscriptionData {
   subscription: any;

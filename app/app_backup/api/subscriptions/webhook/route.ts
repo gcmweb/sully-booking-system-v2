@@ -1,9 +1,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { constructWebhookEvent, validateStripeConfig } from '@/lib/stripe-live';
-import { updateUserSubscriptionPlan, createUserSubscription } from '@/lib/subscription-utils';
+import { constructWebhookEvent, validateStripeConfig } from "../../../../lib/stripe-live";
+import { updateUserSubscriptionPlan, createUserSubscription } from "../../../../lib/subscription-utils";
 import { SubscriptionPlan, SubscriptionStatus } from '@prisma/client';
-import { prisma } from '@/lib/db';
+import { prisma } from "../../../../lib/db";
 
 export const dynamic = 'force-dynamic';
 

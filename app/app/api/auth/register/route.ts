@@ -1,8 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { hashPassword, createSession } from '@/lib/auth';
-import { registerSchema } from '@/lib/validations';
+import { prisma } from "../../../../lib/db";
+import { hashPassword, createSession } from "../../../../lib/auth";
+import { registerSchema } from "../../../../lib/validations";
 import { ZodError } from 'zod';
 
 export const dynamic = 'force-dynamic';

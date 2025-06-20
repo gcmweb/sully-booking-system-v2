@@ -1,17 +1,17 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromToken } from '@/lib/auth';
+import { getUserFromToken } from "../../../../lib/auth";
 import { SubscriptionPlan } from '@prisma/client';
 import { 
   ensureStripeCustomer, 
   getUserSubscription, 
   updateUserSubscriptionPlan 
-} from '@/lib/subscription-utils';
+} from "../../../../lib/subscription-utils";
 import { 
   createCheckoutSession, 
   updateSubscription, 
   STRIPE_PRICE_IDS 
-} from '@/lib/stripe';
+} from "../../../../lib/stripe";
 
 export const dynamic = 'force-dynamic';
 

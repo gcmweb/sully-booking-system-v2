@@ -1,10 +1,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { bookingSchema } from '@/lib/validations';
-import { checkAvailability } from '@/lib/booking-utils';
-import { checkSubscriptionLimits, incrementBookingUsage } from '@/lib/subscription';
-import { sendBookingConfirmation, createNotification } from '@/lib/notifications';
+import { prisma } from "../../../../lib/db";
+import { bookingSchema } from "../../../../lib/validations";
+import { checkAvailability } from "../../../../lib/booking-utils";
+import { checkSubscriptionLimits, incrementBookingUsage } from "../../../../lib/subscription";
+import { sendBookingConfirmation, createNotification } from "../../../../lib/notifications";
 import { BookingStatus, NotificationType, BookingSource } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';

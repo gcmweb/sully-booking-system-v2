@@ -1,8 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromToken } from '@/lib/auth';
-import { ensureStripeCustomer } from '@/lib/subscription-utils';
-import { createCheckoutSession, STRIPE_PRICE_IDS, validateStripeConfig } from '@/lib/stripe-live';
+import { getUserFromToken } from "../../../../lib/auth";
+import { ensureStripeCustomer } from "../../../../lib/subscription-utils";
+import { createCheckoutSession, STRIPE_PRICE_IDS, validateStripeConfig } from "../../../../lib/stripe-live";
 
 export const dynamic = 'force-dynamic';
 

@@ -1,8 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromToken } from '@/lib/auth';
-import { getUserSubscription, ensureStripeCustomer } from '@/lib/subscription-utils';
-import { createBillingPortalSession } from '@/lib/stripe';
+import { getUserFromToken } from "../../../../lib/auth";
+import { getUserSubscription, ensureStripeCustomer } from "../../../../lib/subscription-utils";
+import { createBillingPortalSession } from "../../../../lib/stripe";
 
 export const dynamic = 'force-dynamic';
 
