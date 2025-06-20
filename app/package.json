@@ -1,6 +1,11 @@
 {
   "name": "app",
   "private": true,
+  "packageManager": "npm@9.8.1",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",

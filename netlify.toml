@@ -1,7 +1,6 @@
-
 [build]
   base = "app/"
-  publish = ".next"
+  publish = "app/.next"
   command = "chmod +x build-netlify.sh && ./build-netlify.sh"
 
 [build.environment]
