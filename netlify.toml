@@ -8,7 +8,7 @@
   NPM_VERSION = "9"
   NEXT_TELEMETRY_DISABLED = "1"
   PRISMA_GENERATE_SKIP_AUTOINSTALL = "true"
-  DATABASE_URL = "file:./dev.db"
+  # DATABASE_URL is set in Netlify environment variables - don't override here
 
 # Headers for security and caching
 [[headers]]
