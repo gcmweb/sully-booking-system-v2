@@ -1,12 +1,12 @@
 [build]
-  base = "app/"
+  base = "."
+  command = "yarn install --frozen-lockfile && cd app && yarn build"
   publish = "app/.next"
-  command = "chmod +x build-netlify.sh && ./build-netlify.sh"
 
 [build.environment]
   NODE_VERSION = "18"
-  NPM_VERSION = "9"
-  NETLIFY_NEXT_PLUGIN_SKIP = "false"
+  YARN_VERSION = "1.22.19"
+  NEXT_TELEMETRY_DISABLED = "1"
 
 # Headers for security and caching
 [[headers]]
