@@ -1,14 +1,10 @@
 [build]
-  command = "npm run build"
-  publish = "dist"
+  command = "cd app && npm ci && npm run build"
+  publish = "app/.next"
 
 [build.environment]
   NODE_VERSION = "18"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+  NPM_FLAGS = "--production=false"
 
 [functions]
   node_bundler = "esbuild"
