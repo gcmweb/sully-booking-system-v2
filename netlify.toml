@@ -8,7 +8,8 @@
   NPM_VERSION = "9"
   NEXT_TELEMETRY_DISABLED = "1"
   PRISMA_GENERATE_SKIP_AUTOINSTALL = "true"
-  # DATABASE_URL is set in Netlify environment variables - don't override here
+  # DATABASE_URL override for build-time - ensures proper connection during build
+  DATABASE_URL = "${DATABASE_URL}"
 
 # Headers for security and caching
 [[headers]]
