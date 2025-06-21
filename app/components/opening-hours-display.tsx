@@ -1,195 +1,148 @@
-
 'use client';
 
-import { Badge } from "./ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Clock, Calendar } from 'lucide-react';
+import { Clock } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
 
-interface OpeningHour {
-  id?: string;
-  dayOfWeek: number;
-  openTime: string;
-  closeTime: string;
-  name?: string;
-  isActive: boolean;
+interface OpeningHours {
+  [key: string]: {
+    open: string;
+    close: string;
+    closed: boolean;
+  };
 }
 
 interface OpeningHoursDisplayProps {
-  openingHours: OpeningHour[];
-  compact?: boolean;
-  showTitle?: boolean;
+  openingHours: OpeningHours;
+  className?: string;
 }
 
-const DAYS_OF_WEEK = [
-  { value: 0, label: 'Sunday', short: 'Sun' },
-  { value: 1, label: 'Monday', short: 'Mon' },
-  { value: 2, label: 'Tuesday', short: 'Tue' },
-  { value: 3, label: 'Wednesday', short: 'Wed' },
-  { value: 4, label: 'Thursday', short: 'Thu' },
-  { value: 5, label: 'Friday', short: 'Fri' },
-  { value: 6, label: 'Saturday', short: 'Sat' },
+const DAYS = [
+  { key: 'monday', label: 'Monday', short: 'Mon' },
+  { key: 'tuesday', label: 'Tuesday', short: 'Tue' },
+  { key: 'wednesday', label: 'Wednesday', short: 'Wed' },
+  { key: 'thursday', label: 'Thursday', short: 'Thu' },
+  { key: 'friday', label: 'Friday', short: 'Fri' },
+  { key: 'saturday', label: 'Saturday', short: 'Sat' },
+  { key: 'sunday', label: 'Sunday', short: 'Sun' },
 ];
 
-export default function OpeningHoursDisplay({ 
-  openingHours, 
-  compact = false, 
-  showTitle = true 
-}: OpeningHoursDisplayProps) {
-  const formatTimeRange = (openTime: string, closeTime: string) => {
-    return `${openTime} - ${closeTime}`;
-  };
-
-  const getTimeSlotsForDay = (dayOfWeek: number) => {
-    return openingHours
-      .filter(slot => slot.dayOfWeek === dayOfWeek && slot.isActive)
-      .sort((a, b) => a.openTime.localeCompare(b.openTime));
-  };
-
+export function OpeningHoursDisplay({ openingHours, className = '' }: OpeningHoursDisplayProps) {
   const getCurrentDayStatus = () => {
     const now = new Date();
-    const currentDay = now.getDay();
-    const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+    const currentDay = DAYS[now.getDay() === 0 ? 6 : now.getDay() - 1]; // Adjust for Sunday = 0
+    const currentTime = now.getHours() * 60 + now.getMinutes();
     
-    const todaySlots = getTimeSlotsForDay(currentDay);
-    
-    if (todaySlots.length === 0) {
-      return { isOpen: false, message: 'Closed today' };
+    const dayHours = openingHours[currentDay.key];
+    if (!dayHours || dayHours.closed) {
+      return { status: 'closed', message: 'Closed today' };
     }
-
-    for (const slot of todaySlots) {
-      if (currentTime >= slot.openTime && currentTime <= slot.closeTime) {
-        return { 
-          isOpen: true, 
-          message: `Open until ${slot.closeTime}${slot.name ? ` (${slot.name})` : ''}` 
-        };
+    
+    const [openHour, openMin] = dayHours.open.split(':').map(Number);
+    const [closeHour, closeMin] = dayHours.close.split(':').map(Number);
+    const openTime = openHour * 60 + openMin;
+    const closeTime = closeHour * 60 + closeMin;
+    
+    if (currentTime >= openTime && currentTime <= closeTime) {
+      const closeTimeFormatted = formatTime(dayHours.close);
+      return { status: 'open', message: `Open until ${closeTimeFormatted}` };
+    } else if (currentTime < openTime) {
+      const openTimeFormatted = formatTime(dayHours.open);
+      return { status: 'closed', message: `Opens at ${openTimeFormatted}` };
+    } else {
+      // Find next opening day
+      const nextDay = getNextOpenDay(currentDay.key);
+      if (nextDay) {
+        const nextOpenTime = formatTime(openingHours[nextDay].open);
+        const nextDayLabel = DAYS.find(d => d.key === nextDay)?.label;
+        return { status: 'closed', message: `Opens ${nextDayLabel} at ${nextOpenTime}` };
+      }
+      return { status: 'closed', message: 'Closed' };
+    }
+  };
+  
+  const getNextOpenDay = (currentDayKey: string) => {
+    const currentIndex = DAYS.findIndex(d => d.key === currentDayKey);
+    for (let i = 1; i <= 7; i++) {
+      const nextIndex = (currentIndex + i) % 7;
+      const nextDay = DAYS[nextIndex];
+      const nextDayHours = openingHours[nextDay.key];
+      if (nextDayHours && !nextDayHours.closed) {
+        return nextDay.key;
       }
     }
-
-    // Find next opening time today
-    const nextSlot = todaySlots.find(slot => currentTime < slot.openTime);
-    if (nextSlot) {
-      return { 
-        isOpen: false, 
-        message: `Opens at ${nextSlot.openTime}${nextSlot.name ? ` (${nextSlot.name})` : ''}` 
-      };
-    }
-
-    return { isOpen: false, message: 'Closed for today' };
+    return null;
   };
-
+  
+  const formatTime = (time: string) => {
+    const [hour, minute] = time.split(':').map(Number);
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+  };
+  
   const currentStatus = getCurrentDayStatus();
-
-  if (compact) {
-    return (
-      <div className="space-y-2">
-        {showTitle && (
-          <div className="flex items-center space-x-2">
-            <Clock className="h-4 w-4 text-gray-600" />
-            <span className="text-sm font-medium">Opening Hours</span>
-            <Badge variant={currentStatus.isOpen ? 'default' : 'secondary'} className="text-xs">
-              {currentStatus.isOpen ? 'Open' : 'Closed'}
-            </Badge>
-          </div>
-        )}
-        <div className="text-sm text-gray-600">
-          {currentStatus.message}
-        </div>
-        <div className="grid gap-1">
-          {DAYS_OF_WEEK.map((day) => {
-            const daySlots = getTimeSlotsForDay(day.value);
-            const isToday = new Date().getDay() === day.value;
-            
-            return (
-              <div
-                key={day.value}
-                className={`flex justify-between text-xs ${
-                  isToday ? 'font-medium text-blue-600' : 'text-gray-600'
-                }`}
-              >
-                <span>{day.short}</span>
-                <div className="flex flex-wrap gap-1">
-                  {daySlots.length > 0 ? (
-                    daySlots.map((slot, index) => (
-                      <span key={index}>
-                        {slot.name && `${slot.name}: `}
-                        {formatTimeRange(slot.openTime, slot.closeTime)}
-                        {index < daySlots.length - 1 && ', '}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-gray-400">Closed</span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
+  
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Clock className="h-5 w-5" />
+    <Card className={className}>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center space-x-2 text-lg">
+          <Clock className="h-5 w-5 text-orange-600" />
           <span>Opening Hours</span>
-          <Badge variant={currentStatus.isOpen ? 'default' : 'secondary'}>
-            {currentStatus.isOpen ? 'Open Now' : 'Closed'}
-          </Badge>
         </CardTitle>
-        <CardDescription>
-          {currentStatus.message}
-        </CardDescription>
+        <div className="flex items-center space-x-2">
+          <Badge 
+            variant={currentStatus.status === 'open' ? 'default' : 'secondary'}
+            className={currentStatus.status === 'open' ? 'bg-green-600' : 'bg-gray-500'}
+          >
+            {currentStatus.status === 'open' ? 'Open Now' : 'Closed'}
+          </Badge>
+          <span className="text-sm text-gray-600">{currentStatus.message}</span>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
-          {DAYS_OF_WEEK.map((day) => {
-            const daySlots = getTimeSlotsForDay(day.value);
-            const isToday = new Date().getDay() === day.value;
+        <div className="space-y-2">
+          {DAYS.map((day) => {
+            const dayHours = openingHours[day.key];
+            const isToday = DAYS[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1].key === day.key;
             
             return (
-              <div
-                key={day.value}
-                className={`flex items-center justify-between p-3 rounded-lg ${
-                  isToday ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'
+              <div 
+                key={day.key} 
+                className={`flex justify-between items-center py-2 px-3 rounded-lg transition-colors ${
+                  isToday ? 'bg-orange-50 border border-orange-200' : 'hover:bg-gray-50'
                 }`}
               >
-                <div className="flex items-center space-x-2">
-                  {isToday && <Calendar className="h-4 w-4 text-blue-600" />}
-                  <span className={`font-medium ${isToday ? 'text-blue-900' : 'text-gray-900'}`}>
-                    {day.label}
-                  </span>
+                <span className={`font-medium ${
+                  isToday ? 'text-orange-900' : 'text-gray-900'
+                }`}>
+                  {day.label}
                   {isToday && (
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="ml-2 text-xs border-orange-300 text-orange-700">
                       Today
                     </Badge>
                   )}
-                </div>
-                <div className="flex flex-wrap gap-2 justify-end">
-                  {daySlots.length > 0 ? (
-                    daySlots.map((slot, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {slot.name && `${slot.name}: `}
-                        {formatTimeRange(slot.openTime, slot.closeTime)}
-                      </Badge>
-                    ))
+                </span>
+                <span className={`text-sm ${
+                  isToday ? 'text-orange-700 font-medium' : 'text-gray-600'
+                }`}>
+                  {dayHours && !dayHours.closed ? (
+                    `${formatTime(dayHours.open)} - ${formatTime(dayHours.close)}`
                   ) : (
-                    <span className="text-sm text-gray-500">Closed</span>
+                    <span className="text-gray-400">Closed</span>
                   )}
-                </div>
+                </span>
               </div>
             );
           })}
         </div>
         
-        {openingHours.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No opening hours set</p>
-            <p className="text-sm">Contact the venue for availability</p>
-          </div>
-        )}
+        {/* Additional Info */}
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <p className="text-xs text-gray-500">
+            Hours may vary on holidays. Please contact the venue to confirm availability.
+          </p>
+        </div>
       </CardContent>
     </Card>
   );

@@ -1,180 +1,171 @@
-
 'use client';
 
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Button } from "./ui/button";
-import { Card, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
-import { useToast } from "../hooks/use-toast";
+import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Button } from './ui/button';
+import { Card } from './ui/card';
 import Image from 'next/image';
 
 interface ImageUploadProps {
-  onUpload: (url: string) => void;
-  currentImage?: string;
-  onRemove?: () => void;
+  value: string[];
+  onChange: (urls: string[]) => void;
+  maxFiles?: number;
   disabled?: boolean;
-  accept?: string;
-  maxSize?: number;
-  className?: string;
-  label?: string;
-  description?: string;
-  aspectRatio?: string;
 }
 
-export default function ImageUpload({
-  onUpload,
-  currentImage,
-  onRemove,
-  disabled = false,
-  accept = 'image/*',
-  maxSize = 5 * 1024 * 1024, // 5MB
-  className = '',
-  label = 'Upload Image',
-  description = 'Drag and drop an image here, or click to select',
-  aspectRatio = 'aspect-video',
+export function ImageUpload({
+  value = [],
+  onChange,
+  maxFiles = 5,
+  disabled = false
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
-  const { toast } = useToast();
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return;
-
-    const file = acceptedFiles[0];
+    if (disabled) return;
     
-    // Validate file size
-    if (file.size > maxSize) {
-      toast({
-        title: 'File too large',
-        description: `Maximum file size is ${Math.round(maxSize / 1024 / 1024)}MB`,
-        variant: 'destructive',
-      });
-      return;
-    }
-
     setUploading(true);
-
+    
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+      const uploadPromises = acceptedFiles.map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          throw new Error('Upload failed');
+        }
+        
+        const data = await response.json();
+        return data.url;
       });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Upload failed');
-      }
-
-      const data = await response.json();
-      onUpload(data.url);
-
-      toast({
-        title: 'Upload successful',
-        description: 'Your image has been uploaded successfully.',
-      });
-    } catch (error: any) {
+      
+      const uploadedUrls = await Promise.all(uploadPromises);
+      const newUrls = [...value, ...uploadedUrls].slice(0, maxFiles);
+      onChange(newUrls);
+    } catch (error) {
       console.error('Upload error:', error);
-      toast({
-        title: 'Upload failed',
-        description: error.message || 'Failed to upload image',
-        variant: 'destructive',
-      });
     } finally {
       setUploading(false);
     }
-  }, [onUpload, maxSize, toast]);
+  }, [value, onChange, maxFiles, disabled]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
+      'image/*': ['.jpeg', '.jpg', '.png', '.webp']
     },
-    maxFiles: 1,
-    disabled: disabled || uploading,
+    maxFiles: maxFiles - value.length,
+    disabled: disabled || uploading || value.length >= maxFiles
   });
 
-  const handleRemove = () => {
-    if (onRemove) {
-      onRemove();
-    }
+  const removeImage = (index: number) => {
+    if (disabled) return;
+    const newUrls = value.filter((_, i) => i !== index);
+    onChange(newUrls);
   };
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      {label && (
-        <div>
-          <h3 className="text-sm font-medium text-gray-900">{label}</h3>
-          {description && (
-            <p className="text-sm text-gray-500 mt-1">{description}</p>
-          )}
+    <div className="space-y-4">
+      {/* Existing Images */}
+      {value.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {value.map((url, index) => (
+            <Card key={index} className="relative group overflow-hidden">
+              <div className="aspect-square relative">
+                <Image
+                  src={url}
+                  alt={`Upload ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+                {!disabled && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                    onClick={() => removeImage(index)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </Card>
+          ))}
         </div>
       )}
 
-      {currentImage ? (
-        <Card>
-          <CardContent className="p-4">
-            <div className={`relative ${aspectRatio} bg-gray-100 rounded-lg overflow-hidden`}>
-              <Image
-                src={currentImage}
-                alt="Uploaded image"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-              {onRemove && (
+      {/* Upload Area */}
+      {value.length < maxFiles && (
+        <Card
+          {...getRootProps()}
+          className={`
+            border-2 border-dashed transition-colors cursor-pointer
+            ${isDragActive 
+              ? 'border-orange-500 bg-orange-50' 
+              : 'border-gray-300 hover:border-orange-400'
+            }
+            ${disabled || uploading ? 'opacity-50 cursor-not-allowed' : ''}
+          `}
+        >
+          <input {...getInputProps()} />
+          <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+            {uploading ? (
+              <>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mb-4"></div>
+                <p className="text-sm text-gray-600">Uploading images...</p>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                  {isDragActive ? (
+                    <Upload className="h-8 w-8 text-orange-600" />
+                  ) : (
+                    <ImageIcon className="h-8 w-8 text-orange-600" />
+                  )}
+                </div>
+                
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {isDragActive ? 'Drop images here' : 'Upload venue images'}
+                </h3>
+                
+                <p className="text-sm text-gray-600 mb-4">
+                  Drag and drop images here, or click to select files
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-2 text-xs text-gray-500">
+                  <span>Supports: JPEG, PNG, WebP</span>
+                  <span className="hidden sm:inline">•</span>
+                  <span>Max {maxFiles} images</span>
+                  <span className="hidden sm:inline">•</span>
+                  <span>Max 10MB per image</span>
+                </div>
+                
                 <Button
-                  variant="destructive"
-                  size="sm"
-                  className="absolute top-2 right-2"
-                  onClick={handleRemove}
+                  type="button"
+                  variant="outline"
+                  className="mt-4 border-orange-200 text-orange-700 hover:bg-orange-50"
                   disabled={disabled}
                 >
-                  <X className="h-4 w-4" />
+                  Choose Files
                 </Button>
-              )}
-            </div>
-          </CardContent>
+              </>
+            )}
+          </div>
         </Card>
-      ) : (
-        <Card>
-          <CardContent className="p-0">
-            <div
-              {...getRootProps()}
-              className={`
-                ${aspectRatio} border-2 border-dashed rounded-lg cursor-pointer transition-colors
-                ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
-                ${disabled || uploading ? 'cursor-not-allowed opacity-50' : ''}
-              `}
-            >
-              <input {...getInputProps()} />
-              <div className="h-full flex flex-col items-center justify-center p-6 text-center">
-                {uploading ? (
-                  <>
-                    <Loader2 className="h-8 w-8 text-blue-500 animate-spin mb-4" />
-                    <p className="text-sm text-gray-600">Uploading...</p>
-                  </>
-                ) : (
-                  <>
-                    <Upload className="h-8 w-8 text-gray-400 mb-4" />
-                    <p className="text-sm text-gray-600 mb-2">
-                      {isDragActive ? 'Drop the image here' : 'Drag and drop an image here'}
-                    </p>
-                    <p className="text-xs text-gray-500 mb-4">
-                      or click to select from your computer
-                    </p>
-                    <Badge variant="secondary" className="text-xs">
-                      JPEG, PNG, WebP up to {Math.round(maxSize / 1024 / 1024)}MB
-                    </Badge>
-                  </>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      )}
+
+      {/* Upload Progress */}
+      {value.length > 0 && (
+        <div className="text-sm text-gray-600">
+          {value.length} of {maxFiles} images uploaded
+        </div>
       )}
     </div>
   );
