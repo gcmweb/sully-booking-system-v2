@@ -1,6 +1,8 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -9,349 +11,154 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
-  password      String
-  firstName     String
-  lastName      String
-  phone         String?
-  role          UserRole       @default(VENUE_OWNER)
-  isActive      Boolean        @default(true)
-  emailVerified Boolean        @default(false)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  bookings      Booking[]
-  notifications Notification[]
-  sessions      UserSession[]
-  venues        Venue[]
-
+  id                String   @id @default(cuid())
+  email             String   @unique
+  firstName         String
+  lastName          String
+  password          String
+  role              Role     @default(USER)
+  isActive          Boolean  @default(true)
+  emailVerified     Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  lastLoginAt       DateTime?
+  
+  // Subscription fields
+  stripeCustomerId     String?   @unique
+  subscriptionStatus   String?   // active, inactive, canceled, past_due
+  subscriptionId       String?   @unique
+  currentPeriodEnd     DateTime?
+  planType            String?   // starter, professional, enterprise
+  
+  // Relations
+  venues            Venue[]
+  bookings          Booking[]
+  subscriptionLogs  SubscriptionLog[]
+  
   @@map("users")
 }
 
-model UserSession {
-  id        String   @id @default(cuid())
-  userId    String
-  token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("user_sessions")
-}
-
 model Venue {
-  id             String              @id @default(cuid())
-  name           String
-  slug           String              @unique
-  description    String?
-  address        String
-  city           String
-  postcode       String
-  country        String              @default("UK")
-  phone          String
-  email          String
-  website        String?
-  cuisine        String?
-  venueType      VenueType
-  capacity       Int                 @default(50)
-  isActive       Boolean             @default(true)
-  settings       Json                @default("{}")
-  branding       Json                @default("{}")
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  ownerId        String
-  headerImageUrl String?
-  logoUrl        String?
-  featured       Boolean             @default(false)
-  analytics      Analytics[]
-  widgets        BookingWidget[]
-  bookings       Booking[]
-  events         Event[]
-  services       Service[]
-  subscription   Subscription?
-  tables         Table[]
-  availability   VenueAvailability[]
-  images         VenueImage[]
-  openingHours   VenueOpeningHours[]
-  staff          VenueStaff[]
-  owner          User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  address         String
+  city            String
+  state           String
+  zipCode         String
+  country         String   @default("US")
+  phone           String?
+  email           String?
+  website         String?
+  
+  // Venue details
+  capacity        Int?
+  pricePerHour    Float?
+  currency        String   @default("USD")
+  
+  // Features and amenities
+  amenities       String[] // Array of amenity strings
+  images          String[] // Array of image URLs
+  
+  // Availability
+  isActive        Boolean  @default(true)
+  openingHours    Json?    // Store opening hours as JSON
+  
+  // Location coordinates
+  latitude        Float?
+  longitude       Float?
+  
+  // SEO and metadata
+  slug            String?  @unique
+  metaTitle       String?
+  metaDescription String?
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  ownerId         String
+  owner           User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  bookings        Booking[]
+  
   @@map("venues")
 }
 
-model Subscription {
-  id                   String             @id @default(cuid())
-  venueId              String             @unique
-  plan                 SubscriptionPlan
-  status               SubscriptionStatus
-  currentPeriodStart   DateTime
-  currentPeriodEnd     DateTime
-  bookingsUsed         Int                @default(0)
-  bookingsLimit        Int?
-  stripeCustomerId     String?
-  stripeSubscriptionId String?
-  paypalSubscriptionId String?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
-  payments             Payment[]
-  venue                Venue              @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("subscriptions")
-}
-
-model VenueImage {
-  id           String         @id @default(cuid())
-  venueId      String
-  url          String
-  alt          String?
-  type         VenueImageType
-  displayOrder Int            @default(0)
-  isActive     Boolean        @default(true)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  venue        Venue          @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("venue_images")
-}
-
-model Table {
-  id          String    @id @default(cuid())
-  venueId     String
-  name        String
-  capacity    Int
-  isActive    Boolean   @default(true)
-  position    Json?
-  description String?
-  bookings    Booking[]
-  venue       Venue     @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("tables")
-}
-
 model Booking {
-  id              String        @id @default(cuid())
-  venueId         String
-  customerId      String?
-  tableId         String?
-  serviceType     ServiceType
-  status          BookingStatus @default(PENDING)
-  date            DateTime
-  time            String
-  duration        Int           @default(120)
-  partySize       Int
+  id              String      @id @default(cuid())
+  
+  // Booking details
+  startTime       DateTime
+  endTime         DateTime
+  totalHours      Float
+  pricePerHour    Float
+  totalAmount     Float
+  currency        String      @default("USD")
+  
+  // Customer information
   customerName    String
   customerEmail   String
-  customerPhone   String
-  specialRequests String?
-  totalAmount     Decimal?      @db.Decimal(10, 2)
-  depositAmount   Decimal?      @db.Decimal(10, 2)
-  isPaid          Boolean       @default(false)
-  source          BookingSource @default(DIRECT)
+  customerPhone   String?
+  
+  // Booking status and metadata
+  status          BookingStatus @default(PENDING)
   notes           String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  customer        User?         @relation(fields: [customerId], references: [id])
-  table           Table?        @relation(fields: [tableId], references: [id])
-  venue           Venue         @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  payments        Payment[]
-
+  internalNotes   String?     // For venue owner use
+  
+  // Payment information
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod   String?     // stripe, cash, etc.
+  paymentIntentId String?     // Stripe payment intent ID
+  refundAmount    Float?      // If partially refunded
+  
+  // Timestamps
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  confirmedAt     DateTime?
+  cancelledAt     DateTime?
+  
+  // Relations
+  venueId         String
+  venue           Venue       @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  customerId      String?
+  customer        User?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  
   @@map("bookings")
 }
 
-model Event {
-  id          String   @id @default(cuid())
-  venueId     String
-  name        String
-  description String?
-  date        DateTime
-  startTime   String
-  endTime     String
-  capacity    Int
-  price       Decimal? @db.Decimal(10, 2)
-  isActive    Boolean  @default(true)
-  isRecurring Boolean  @default(false)
-  recurrence  Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  venue       Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("events")
+model SubscriptionLog {
+  id              String   @id @default(cuid())
+  
+  // Subscription event details
+  eventType       String   // subscription_created, subscription_updated, subscription_canceled, etc.
+  stripeEventId   String?  @unique
+  
+  // Subscription data
+  subscriptionId  String
+  customerId      String
+  status          String
+  planType        String?
+  amount          Float?
+  currency        String   @default("USD")
+  
+  // Event metadata
+  eventData       Json?    // Store full event data as JSON
+  processedAt     DateTime @default(now())
+  
+  // Relations
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("subscription_logs")
 }
 
-model Service {
-  id          String      @id @default(cuid())
-  venueId     String
-  type        ServiceType
-  name        String
-  description String?
-  isActive    Boolean     @default(true)
-  settings    Json        @default("{}")
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  venue       Venue       @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("services")
-}
-
-model VenueAvailability {
-  id        String    @id @default(cuid())
-  venueId   String
-  dayOfWeek Int
-  openTime  String
-  closeTime String
-  isOpen    Boolean   @default(true)
-  date      DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  venue     Venue     @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@unique([venueId, dayOfWeek], name: "venueId_dayOfWeek")
-  @@map("venue_availability")
-}
-
-model VenueOpeningHours {
-  id        String   @id @default(cuid())
-  venueId   String
-  dayOfWeek Int
-  openTime  String
-  closeTime String
-  name      String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  venue     Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("venue_opening_hours")
-}
-
-model VenueStaff {
-  id       String    @id @default(cuid())
-  venueId  String
-  name     String
-  email    String
-  role     StaffRole
-  isActive Boolean   @default(true)
-  venue    Venue     @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("venue_staff")
-}
-
-model Payment {
-  id                String          @id @default(cuid())
-  bookingId         String?
-  subscriptionId    String?
-  amount            Decimal         @db.Decimal(10, 2)
-  currency          String          @default("GBP")
-  status            PaymentStatus
-  provider          PaymentProvider
-  providerPaymentId String?
-  metadata          Json?
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  booking           Booking?        @relation(fields: [bookingId], references: [id])
-  subscription      Subscription?   @relation(fields: [subscriptionId], references: [id])
-
-  @@map("payments")
-}
-
-model BookingWidget {
-  id        String   @id @default(cuid())
-  venueId   String
-  name      String
-  settings  Json     @default("{}")
-  isActive  Boolean  @default(true)
-  embedCode String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  venue     Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("booking_widgets")
-}
-
-model Analytics {
-  id        String   @id @default(cuid())
-  venueId   String
-  date      DateTime
-  metric    String
-  value     Decimal  @db.Decimal(15, 2)
-  metadata  Json?
-  createdAt DateTime @default(now())
-  venue     Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  @@map("analytics")
-}
-
-model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  type      NotificationType
-  title     String
-  message   String
-  isRead    Boolean          @default(false)
-  metadata  Json?
-  createdAt DateTime         @default(now())
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("notifications")
-}
-
-model EmailTemplate {
-  id       String  @id @default(cuid())
-  name     String  @unique
-  subject  String
-  htmlBody String
-  textBody String?
-  isActive Boolean @default(true)
-
-  @@map("email_templates")
-}
-
-model SmsTemplate {
-  id       String  @id @default(cuid())
-  name     String  @unique
-  message  String
-  isActive Boolean @default(true)
-
-  @@map("sms_templates")
-}
-
-enum UserRole {
-  SUPER_ADMIN
+// Enums
+enum Role {
+  USER
   VENUE_OWNER
-  VENUE_STAFF
-  CUSTOMER
-}
-
-enum VenueType {
-  RESTAURANT
-  CAFE
-  BAR
-  PUB
-  FOOD_TRUCK
-  FINE_DINING
-  FAST_CASUAL
-  BAKERY
-  OTHER
-}
-
-enum SubscriptionPlan {
-  FREE
-  PAID
-  PREMIUM
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELLED
-  PAST_DUE
-  UNPAID
-}
-
-enum ServiceType {
-  DINE_IN
-  TAKEAWAY
-  DELIVERY
-  EVENT
+  ADMIN
+  SUPER_ADMIN
 }
 
 enum BookingStatus {
@@ -362,48 +169,19 @@ enum BookingStatus {
   NO_SHOW
 }
 
-enum BookingSource {
-  DIRECT
-  WIDGET
-  API
-  PHONE
-  WALK_IN
-}
-
 enum PaymentStatus {
   PENDING
-  COMPLETED
+  PAID
   FAILED
   REFUNDED
+  PARTIALLY_REFUNDED
 }
 
-enum PaymentProvider {
-  STRIPE
-  PAYPAL
-}
-
-enum StaffRole {
-  MANAGER
-  HOST
-  SERVER
-  ADMIN
-}
-
-enum NotificationType {
-  BOOKING_CONFIRMATION
-  BOOKING_REMINDER
-  BOOKING_CANCELLED
-  PAYMENT_RECEIVED
-  SUBSCRIPTION_EXPIRING
-  SYSTEM_ALERT
-}
-
-enum VenueImageType {
-  MENU
-  FOOD
-  INTERIOR
-  EXTERIOR
-  STAFF
-  EVENT
-  OTHER
-}
+// Indexes for better performance
+// These will be created automatically by Prisma
+// @@index([email]) on User
+// @@index([ownerId]) on Venue
+// @@index([venueId, startTime]) on Booking
+// @@index([customerId]) on Booking
+// @@index([status]) on Booking
+// @@index([userId]) on SubscriptionLog

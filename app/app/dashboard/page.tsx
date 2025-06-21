@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -7,35 +6,50 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
-import { CalendarDays, Users, TrendingUp, Plus, Settings, BarChart3 } from 'lucide-react';
+import { CalendarDays, Building, TrendingUp, Users, Plus, Eye, Edit, BarChart3, CreditCard, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useToast } from "../../hooks/use-toast";
+import { SubscriptionStatus } from "../../components/subscription-status";
 import { SubscriptionBanner } from "../../components/subscription-banner";
-import { useSubscription } from "../../hooks/use-subscription";
+
+interface DashboardStats {
+  totalVenues: number;
+  totalBookings: number;
+  monthlyRevenue: number;
+  pendingBookings: number;
+}
+
+interface RecentBooking {
+  id: string;
+  customerName: string;
+  venue: {
+    name: string;
+  };
+  startTime: string;
+  totalAmount: number;
+  status: string;
+}
 
 interface Venue {
   id: string;
   name: string;
-  venueType: string;
+  city: string;
+  state: string;
   isActive: boolean;
-  subscription: {
-    plan: string;
-    bookingsUsed: number;
-    bookingsLimit: number | null;
-  };
   _count: {
     bookings: number;
-    tables: number;
   };
 }
 
 export default function DashboardPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
   const router = useRouter();
-  // Initialize venues with empty array to prevent undefined access
+  const { toast } = useToast();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
   const [venues, setVenues] = useState<Venue[]>([]);
-  const [loadingVenues, setLoadingVenues] = useState(true);
-  const { data: subscriptionData } = useSubscription();
+  const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -45,61 +59,49 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (user) {
-      fetchVenues();
+      fetchDashboardData();
     }
   }, [user]);
 
-  const fetchVenues = async () => {
-    console.log('🔵 [DASHBOARD] Starting to fetch venues');
-    
+  const fetchDashboardData = async () => {
     try {
-      const response = await fetch('/api/venues', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store'
-      });
-      
-      console.log('🔵 [DASHBOARD] Venues fetch response status:', response.status);
-      
+      const response = await fetch('/api/dashboard/stats');
       if (response.ok) {
         const data = await response.json();
-        console.log('🔵 [DASHBOARD] Venues fetch response data:', data);
-        
-        // Comprehensive null/undefined checks with fallback arrays
-        const safeVenues = Array.isArray(data?.venues) ? data.venues : [];
-        setVenues(safeVenues);
-        console.log('🟢 [DASHBOARD] Venues fetched successfully, count:', safeVenues.length);
-      } else {
-        const errorData = await response.text();
-        console.error('🔴 [DASHBOARD] Failed to fetch venues:', response.status, response.statusText);
-        console.error('🔴 [DASHBOARD] Error response:', errorData);
-        setVenues([]); // Set empty array on error
+        setStats(data.stats);
+        setRecentBookings(data.recentBookings);
+        setVenues(data.venues);
       }
     } catch (error) {
-      console.error('🔴 [DASHBOARD] Network error fetching venues:', error);
-      setVenues([]); // Set empty array on network error
+      console.error('Failed to fetch dashboard data:', error);
     } finally {
-      setLoadingVenues(false);
-      console.log('🔵 [DASHBOARD] Venues fetch completed');
+      setLoadingData(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: 'Signed out successfully',
+        description: 'You have been logged out.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to sign out. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
 
   if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
       </div>
     );
   }
-
-  // Allow both VENUE_OWNER and SUPER_ADMIN to access dashboard
-  // SUPER_ADMIN can manage venues and also access admin panel
-
-  // Ensure venues is always an array for safe operations
-  const safeVenues = Array.isArray(venues) ? venues : [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -109,21 +111,30 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Link href="/" className="flex items-center space-x-2">
-                <CalendarDays className="h-8 w-8 text-blue-600" />
+                <CalendarDays className="h-8 w-8 text-orange-600" />
                 <span className="text-2xl font-bold text-gray-900">Sully</span>
               </Link>
               <Badge variant="secondary">Dashboard</Badge>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                Welcome, {user?.firstName || 'User'}!
+                Welcome, {user.firstName}!
               </span>
+              {user.role === 'SUPER_ADMIN' && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => router.push('/admin')}
+                >
+                  Admin Panel
+                </Button>
+              )}
               <Button
                 variant="outline"
-                onClick={() => {
-                  // Add logout functionality
-                }}
+                size="sm"
+                onClick={handleLogout}
               >
+                <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
             </div>
@@ -132,6 +143,9 @@ export default function DashboardPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Subscription Banner */}
+        <SubscriptionBanner />
+
         {/* Welcome Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -140,26 +154,99 @@ export default function DashboardPage() {
           className="mb-8"
         >
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {user?.firstName || 'User'}!
+            Welcome back, {user.firstName}!
           </h1>
           <p className="text-gray-600">
-            Manage your venues and bookings from your dashboard
+            Here's what's happening with your venues and bookings
           </p>
         </motion.div>
 
-        {/* Subscription Banner */}
-        {subscriptionData && user && (
+        {/* Subscription Status */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="mb-8"
+        >
+          <SubscriptionStatus />
+        </motion.div>
+
+        {/* Stats Cards */}
+        {loadingData ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {[1, 2, 3, 4].map((i) => (
+              <Card key={i} className="animate-pulse">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.05 }}
-            className="mb-8"
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
           >
-            <SubscriptionBanner
-              plan={subscriptionData.plan}
-              venuesUsed={subscriptionData.summary.venues.used}
-              venuesLimit={subscriptionData.summary.venues.limit}
-            />
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Venues</CardTitle>
+                <Building className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats?.totalVenues || 0}</div>
+                <p className="text-xs text-muted-foreground">
+                  Active listings
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+                <CalendarDays className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats?.totalBookings || 0}</div>
+                <p className="text-xs text-muted-foreground">
+                  All time bookings
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  ${stats?.monthlyRevenue?.toLocaleString() || '0'}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  This month
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Pending Bookings</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats?.pendingBookings || 0}</div>
+                <p className="text-xs text-muted-foreground">
+                  Awaiting confirmation
+                </p>
+              </CardContent>
+            </Card>
           </motion.div>
         )}
 
@@ -167,165 +254,167 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
         >
           <Link href="/dashboard/venues/new">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
               <CardHeader className="flex flex-row items-center space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Add New Venue</CardTitle>
-                <Plus className="h-4 w-4 ml-auto text-blue-600" />
+                <Plus className="h-4 w-4 ml-auto text-orange-600 group-hover:scale-110 transition-transform" />
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  Create a new venue to start accepting bookings
+                  List a new venue for booking
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/dashboard/venues">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+              <CardHeader className="flex flex-row items-center space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Manage Venues</CardTitle>
+                <Building className="h-4 w-4 ml-auto text-green-600 group-hover:scale-110 transition-transform" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground">
+                  Edit and manage your venues
                 </p>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/dashboard/bookings">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
               <CardHeader className="flex flex-row items-center space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">View Bookings</CardTitle>
-                <CalendarDays className="h-4 w-4 ml-auto text-green-600" />
+                <Eye className="h-4 w-4 ml-auto text-blue-600 group-hover:scale-110 transition-transform" />
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  Manage all your venue bookings
+                  Review all venue bookings
                 </p>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/dashboard/analytics">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
               <CardHeader className="flex flex-row items-center space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Analytics</CardTitle>
-                <BarChart3 className="h-4 w-4 ml-auto text-purple-600" />
+                <BarChart3 className="h-4 w-4 ml-auto text-purple-600 group-hover:scale-110 transition-transform" />
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  View booking trends and revenue reports
+                  View performance metrics
                 </p>
               </CardContent>
             </Card>
           </Link>
         </motion.div>
 
-        {/* Venues Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Your Venues</h2>
-            <Link href="/dashboard/venues/new">
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Venue
-              </Button>
-            </Link>
-          </div>
-
-          {loadingVenues ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <Card key={i} className="animate-pulse">
-                  <CardHeader>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-gray-200 rounded"></div>
-                      <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : safeVenues.length === 0 ? (
+        {/* Recent Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Recent Bookings */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             <Card>
-              <CardContent className="text-center py-12">
-                <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No venues yet
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Get started by creating your first venue
-                </p>
-                <Link href="/dashboard/venues/new">
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Your First Venue
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {safeVenues.map((venue, index) => (
-                <motion.div
-                  key={venue?.id || index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.1 * index }}
-                >
-                  <Card className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Recent Bookings</span>
+                  <Link href="/dashboard/bookings">
+                    <Button variant="outline" size="sm">
+                      View All
+                    </Button>
+                  </Link>
+                </CardTitle>
+                <CardDescription>Latest booking activity for your venues</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {recentBookings.length === 0 ? (
+                  <p className="text-sm text-gray-500 text-center py-4">
+                    No recent bookings
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {recentBookings.map((booking) => (
+                      <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
-                          <CardTitle className="text-lg">{venue?.name || 'Unknown Venue'}</CardTitle>
-                          <CardDescription>{venue?.venueType || 'Unknown Type'}</CardDescription>
+                          <p className="font-medium text-sm">{booking.customerName}</p>
+                          <p className="text-xs text-gray-600">{booking.venue.name}</p>
                         </div>
-                        <Badge variant={venue?.isActive ? 'default' : 'secondary'}>
-                          {venue?.isActive ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Plan:</span>
-                          <Badge variant="outline">
-                            {venue?.subscription?.plan || 'Unknown'}
+                        <div className="text-right">
+                          <p className="font-medium text-sm">${booking.totalAmount}</p>
+                          <Badge variant="outline" className="text-xs">
+                            {booking.status}
                           </Badge>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Bookings:</span>
-                          <span>
-                            {venue?.subscription?.bookingsUsed || 0}/
-                            {venue?.subscription?.bookingsLimit || '∞'}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Your Venues */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Your Venues</span>
+                  <Link href="/dashboard/venues">
+                    <Button variant="outline" size="sm">
+                      Manage All
+                    </Button>
+                  </Link>
+                </CardTitle>
+                <CardDescription>Quick overview of your venue listings</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {venues.length === 0 ? (
+                  <div className="text-center py-6">
+                    <Building className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-sm text-gray-500 mb-3">No venues listed yet</p>
+                    <Link href="/dashboard/venues/new">
+                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Your First Venue
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {venues.slice(0, 3).map((venue) => (
+                      <div key={venue.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-medium text-sm">{venue.name}</p>
+                          <p className="text-xs text-gray-600">{venue.city}, {venue.state}</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={venue.isActive ? "default" : "secondary"} className="text-xs">
+                            {venue.isActive ? 'Active' : 'Inactive'}
+                          </Badge>
+                          <span className="text-xs text-gray-600">
+                            {venue._count.bookings} bookings
                           </span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Tables:</span>
-                          <span>{venue?._count?.tables || 0}</span>
-                        </div>
-                        <div className="flex space-x-2 pt-2">
-                          <Link href={`/dashboard/venues/${venue?.id || ''}`} className="flex-1">
-                            <Button variant="outline" size="sm" className="w-full">
-                              <Settings className="h-4 w-4 mr-1" />
-                              Manage
-                            </Button>
-                          </Link>
-                          <Link href={`/dashboard/venues/${venue?.id || ''}/analytics`} className="flex-1">
-                            <Button variant="outline" size="sm" className="w-full">
-                              <TrendingUp className="h-4 w-4 mr-1" />
-                              Analytics
-                            </Button>
-                          </Link>
-                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </motion.div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
