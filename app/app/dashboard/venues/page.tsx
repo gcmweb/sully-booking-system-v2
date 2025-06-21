@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -7,45 +6,36 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
-import { Alert, AlertDescription } from "../../../components/ui/alert";
-import { CalendarDays, Users, Plus, Settings, BarChart3, ArrowLeft, Crown, AlertTriangle } from 'lucide-react';
+import { Building, ArrowLeft, Plus, Eye, Edit, ToggleLeft, ToggleRight, MapPin, Users, DollarSign, Calendar } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { useToast } from "../../../hooks/use-toast";
 
 interface Venue {
   id: string;
   name: string;
-  venueType: string;
+  description: string;
+  address: string;
+  city: string;
+  state: string;
+  pricePerHour: number;
+  capacity: number;
+  images: string[];
   isActive: boolean;
-  logoUrl: string | null;
-  headerImageUrl: string | null;
-  subscription: {
-    plan: string;
-    bookingsUsed: number;
-    bookingsLimit: number | null;
-  };
+  createdAt: string;
   _count: {
     bookings: number;
-    tables: number;
   };
 }
 
-interface VenueLimits {
-  canCreateVenue: boolean;
-  venuesUsed: number;
-  venuesLimit: number | null;
-  plan: string;
-  message?: string;
-}
-
-export default function VenuesListPage() {
+export default function DashboardVenuesPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  // Initialize venues with empty array to prevent undefined access
+  const { toast } = useToast();
   const [venues, setVenues] = useState<Venue[]>([]);
-  const [loadingVenues, setLoadingVenues] = useState(true);
-  const [venueLimits, setVenueLimits] = useState<VenueLimits | null>(null);
+  const [loadingData, setLoadingData] = useState(true);
+  const [updatingVenue, setUpdatingVenue] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -56,70 +46,71 @@ export default function VenuesListPage() {
   useEffect(() => {
     if (user) {
       fetchVenues();
-      fetchVenueLimits();
     }
   }, [user]);
 
   const fetchVenues = async () => {
     try {
-      const response = await fetch('/api/venues', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store'
-      });
-      
+      const response = await fetch('/api/dashboard/venues');
       if (response.ok) {
         const data = await response.json();
-        // Comprehensive null/undefined checks with fallback arrays
-        const safeVenues = Array.isArray(data?.venues) ? data.venues : [];
-        setVenues(safeVenues);
-      } else {
-        console.error('Failed to fetch venues:', response.status);
-        setVenues([]);
+        setVenues(data.venues);
       }
     } catch (error) {
-      console.error('Network error fetching venues:', error);
-      setVenues([]);
+      console.error('Failed to fetch venues:', error);
     } finally {
-      setLoadingVenues(false);
+      setLoadingData(false);
     }
   };
 
-  const fetchVenueLimits = async () => {
+  const toggleVenueStatus = async (venueId: string, currentStatus: boolean) => {
+    setUpdatingVenue(venueId);
     try {
-      const response = await fetch('/api/venues/limits', {
-        method: 'GET',
-        credentials: 'include',
+      const response = await fetch(`/api/venues/${venueId}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        cache: 'no-store'
+        body: JSON.stringify({ isActive: !currentStatus }),
       });
       
       if (response.ok) {
-        const data = await response.json();
-        setVenueLimits(data);
+        setVenues(venues.map(v => 
+          v.id === venueId ? { ...v, isActive: !currentStatus } : v
+        ));
+        toast({
+          title: 'Venue updated',
+          description: `Venue has been ${!currentStatus ? 'activated' : 'deactivated'}.`,
+        });
       } else {
-        console.error('Failed to fetch venue limits:', response.status);
+        throw new Error('Failed to update venue');
       }
     } catch (error) {
-      console.error('Network error fetching venue limits:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update venue status. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setUpdatingVenue(null);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
       </div>
     );
   }
-
-  // Ensure venues is always an array for safe operations
-  const safeVenues = Array.isArray(venues) ? venues : [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -128,227 +119,192 @@ export default function VenuesListPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="flex items-center space-x-2">
-                <CalendarDays className="h-8 w-8 text-blue-600" />
-                <span className="text-2xl font-bold text-gray-900">Sully</span>
+              <Link href="/dashboard" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+                <ArrowLeft className="h-5 w-5" />
+                <span>Back to Dashboard</span>
               </Link>
-              <Badge variant="secondary">Venues</Badge>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <div className="flex items-center space-x-2">
+                <Building className="h-6 w-6 text-orange-600" />
+                <span className="text-xl font-semibold text-gray-900">My Venues</span>
+              </div>
             </div>
-            <Link href="/dashboard">
-              <Button variant="outline">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Badge variant="secondary">Dashboard</Badge>
+              <Link href="/dashboard/venues/new">
+                <Button className="bg-orange-600 hover:bg-orange-700 text-white">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Venue
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header Section */}
+        {/* Page Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="mb-8"
         >
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Venues</h1>
-              <p className="text-gray-600">
-                Manage all your venues and their settings
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              {venueLimits && (
-                <div className="text-right">
-                  <div className="text-sm text-gray-600">
-                    {venueLimits.venuesUsed}/{venueLimits.venuesLimit || '∞'} venues
-                  </div>
-                  <Badge variant={venueLimits.plan === 'FREE' ? 'secondary' : 'default'} className="text-xs">
-                    {venueLimits.plan === 'SUPER_ADMIN' ? 'Admin' : venueLimits.plan}
-                  </Badge>
-                </div>
-              )}
-              {venueLimits?.canCreateVenue ? (
-                <Link href="/dashboard/venues/new">
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add New Venue
-                  </Button>
-                </Link>
-              ) : (
-                <Button disabled>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add New Venue
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* Subscription Limit Warning */}
-          {venueLimits && !venueLimits.canCreateVenue && (
-            <Alert className="border-orange-200 bg-orange-50">
-              <AlertTriangle className="h-4 w-4 text-orange-600" />
-              <AlertDescription className="text-orange-800">
-                <div className="flex justify-between items-center">
-                  <span>{venueLimits.message}</span>
-                  <Button size="sm" className="ml-4">
-                    <Crown className="h-4 w-4 mr-2" />
-                    Upgrade Plan
-                  </Button>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Upgrade Prompt for FREE users */}
-          {venueLimits && venueLimits.plan === 'FREE' && venueLimits.canCreateVenue && (
-            <Alert className="border-blue-200 bg-blue-50">
-              <Crown className="h-4 w-4 text-blue-600" />
-              <AlertDescription className="text-blue-800">
-                <div className="flex justify-between items-center">
-                  <span>You're on the FREE plan. Upgrade to create up to 5 venues and unlock premium features!</span>
-                  <Button size="sm" variant="outline" className="ml-4">
-                    <Crown className="h-4 w-4 mr-2" />
-                    View Plans
-                  </Button>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            My Venues
+          </h1>
+          <p className="text-gray-600">
+            Manage your venue listings and track their performance
+          </p>
         </motion.div>
 
         {/* Venues Grid */}
-        {loadingVenues ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <Card key={i} className="animate-pulse">
-                <CardHeader>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="h-3 bg-gray-200 rounded"></div>
-                    <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : safeVenues.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+        >
+          {loadingData ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+                  <CardContent className="p-6">
+                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="flex justify-between items-center">
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                      <div className="h-8 bg-gray-200 rounded w-24"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : venues.length === 0 ? (
             <Card>
               <CardContent className="text-center py-12">
-                <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No venues yet
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Get started by creating your first venue
-                </p>
+                <Building className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No venues yet</h3>
+                <p className="text-gray-600 mb-6">Start by adding your first venue to begin accepting bookings.</p>
                 <Link href="/dashboard/venues/new">
-                  <Button>
+                  <Button className="bg-orange-600 hover:bg-orange-700 text-white">
                     <Plus className="h-4 w-4 mr-2" />
-                    Create Your First Venue
+                    Add Your First Venue
                   </Button>
                 </Link>
               </CardContent>
             </Card>
-          </motion.div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {safeVenues.map((venue, index) => (
-              <motion.div
-                key={venue?.id || index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 * index }}
-              >
-                <Card className="hover:shadow-lg transition-shadow overflow-hidden">
-                  {/* Venue Header Image */}
-                  {venue?.headerImageUrl && (
-                    <div className="relative h-32 bg-gray-100">
-                      <Image
-                        src={venue.headerImageUrl}
-                        alt={`${venue?.name || 'Venue'} header`}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-10"></div>
-                    </div>
-                  )}
-                  
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center space-x-3">
-                        {venue?.logoUrl && (
-                          <div className="relative h-10 w-10 rounded-lg overflow-hidden bg-white shadow-sm flex-shrink-0">
-                            <Image
-                              src={venue.logoUrl}
-                              alt={`${venue?.name || 'Venue'} logo`}
-                              fill
-                              className="object-cover"
-                              sizes="40px"
-                            />
-                          </div>
-                        )}
-                        <div>
-                          <CardTitle className="text-lg">{venue?.name || 'Unknown Venue'}</CardTitle>
-                          <CardDescription>{venue?.venueType || 'Unknown Type'}</CardDescription>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {venues.map((venue, index) => (
+                <motion.div
+                  key={venue.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: index * 0.1 }}
+                >
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
+                    <div className="relative h-48">
+                      {venue.images && venue.images.length > 0 ? (
+                        <Image
+                          src={venue.images[0]}
+                          alt={venue.name}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                          <Building className="h-16 w-16 text-orange-400" />
                         </div>
-                      </div>
-                      <Badge variant={venue?.isActive ? 'default' : 'secondary'}>
-                        {venue?.isActive ? 'Active' : 'Inactive'}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Plan:</span>
-                        <Badge variant="outline">
-                          {venue?.subscription?.plan || 'Unknown'}
+                      )}
+                      <div className="absolute top-4 right-4">
+                        <Badge variant={venue.isActive ? "default" : "secondary"} className={venue.isActive ? "bg-green-600" : ""}>
+                          {venue.isActive ? 'Active' : 'Inactive'}
                         </Badge>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Bookings:</span>
-                        <span>
-                          {venue?.subscription?.bookingsUsed || 0}/
-                          {venue?.subscription?.bookingsLimit || '∞'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Tables:</span>
-                        <span>{venue?._count?.tables || 0}</span>
-                      </div>
-                      <div className="flex space-x-2 pt-2">
-                        <Link href={`/dashboard/venues/${venue?.id || ''}`} className="flex-1">
-                          <Button variant="outline" size="sm" className="w-full">
-                            <Settings className="h-4 w-4 mr-1" />
-                            Manage
-                          </Button>
-                        </Link>
-                        <Link href={`/dashboard/venues/${venue?.id || ''}/analytics`} className="flex-1">
-                          <Button variant="outline" size="sm" className="w-full">
-                            <BarChart3 className="h-4 w-4 mr-1" />
-                            Analytics
-                          </Button>
-                        </Link>
-                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        )}
+                    
+                    <CardContent className="p-6 flex flex-col flex-1">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                          {venue.name}
+                        </h3>
+                        
+                        <div className="flex items-center text-gray-600 mb-3">
+                          <MapPin className="h-4 w-4 mr-1" />
+                          <span className="text-sm">{venue.city}, {venue.state}</span>
+                        </div>
+                        
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                          {venue.description}
+                        </p>
+                        
+                        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                          <div className="flex items-center text-gray-600">
+                            <DollarSign className="h-4 w-4 mr-1" />
+                            <span>${venue.pricePerHour}/hr</span>
+                          </div>
+                          <div className="flex items-center text-gray-600">
+                            <Users className="h-4 w-4 mr-1" />
+                            <span>{venue.capacity} guests</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            <span>{venue._count.bookings} bookings</span>
+                          </div>
+                          <span>Added {formatDate(venue.createdAt)}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-4 border-t">
+                        <div className="flex items-center space-x-2">
+                          <Link href={`/dashboard/venues/${venue.id}`}>
+                            <Button size="sm" variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+                              <Eye className="h-4 w-4 mr-1" />
+                              View
+                            </Button>
+                          </Link>
+                          
+                          <Link href={`/dashboard/venues/${venue.id}/edit`}>
+                            <Button size="sm" variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+                              <Edit className="h-4 w-4 mr-1" />
+                              Edit
+                            </Button>
+                          </Link>
+                        </div>
+                        
+                        <Button
+                          size="sm"
+                          variant={venue.isActive ? "destructive" : "default"}
+                          onClick={() => toggleVenueStatus(venue.id, venue.isActive)}
+                          disabled={updatingVenue === venue.id}
+                          className={venue.isActive ? '' : 'bg-green-600 hover:bg-green-700'}
+                        >
+                          {updatingVenue === venue.id ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          ) : venue.isActive ? (
+                            <>
+                              <ToggleLeft className="h-4 w-4 mr-1" />
+                              Disable
+                            </>
+                          ) : (
+                            <>
+                              <ToggleRight className="h-4 w-4 mr-1" />
+                              Enable
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
       </div>
     </div>
   );

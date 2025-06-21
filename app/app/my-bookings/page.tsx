@@ -1,117 +1,83 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+import { useAuth } from "../../components/auth-provider";
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
-import { CalendarDays, Clock, MapPin, Phone, Mail, Search, ArrowLeft } from 'lucide-react';
+import { CalendarDays, ArrowLeft, MapPin, Clock, DollarSign, Phone, Mail, FileText, XCircle } from 'lucide-react';
 import Link from 'next/link';
-import { useToast } from "../../hooks/use-toast";
+import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { useToast } from "../../hooks/use-toast";
 
 interface Booking {
   id: string;
+  startTime: string;
+  endTime: string;
+  totalAmount: number;
   status: string;
-  date: string;
-  time: string;
-  partySize: number;
-  serviceType: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  specialRequests: string;
+  paymentStatus: string;
+  notes?: string;
+  createdAt: string;
   venue: {
     id: string;
     name: string;
     address: string;
     city: string;
-    phone: string;
-    email: string;
-  };
-  table?: {
-    id: string;
-    name: string;
+    state: string;
+    images: string[];
+    phone?: string;
+    email?: string;
   };
 }
 
 export default function MyBookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchData, setSearchData] = useState({
-    email: '',
-    phone: '',
-  });
-  const [hasSearched, setHasSearched] = useState(false);
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const { toast } = useToast();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [cancellingBooking, setCancellingBooking] = useState<string | null>(null);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!searchData.email && !searchData.phone) {
-      toast({
-        title: 'Search required',
-        description: 'Please enter your email or phone number to find your bookings.',
-        variant: 'destructive',
-      });
-      return;
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth/login');
     }
+  }, [user, loading, router]);
 
-    setLoading(true);
-    setHasSearched(true);
+  useEffect(() => {
+    if (user) {
+      fetchBookings();
+    }
+  }, [user]);
 
+  const fetchBookings = async () => {
     try {
-      const params = new URLSearchParams();
-      if (searchData.email) params.append('email', searchData.email);
-      if (searchData.phone) params.append('phone', searchData.phone);
-
-      const response = await fetch(`/api/customer/bookings?${params}`);
+      const response = await fetch('/api/my-bookings');
       if (response.ok) {
         const data = await response.json();
         setBookings(data.bookings);
-        
-        if (data.bookings.length === 0) {
-          toast({
-            title: 'No bookings found',
-            description: 'No bookings were found with the provided information.',
-          });
-        }
-      } else {
-        throw new Error('Failed to fetch bookings');
       }
     } catch (error) {
       console.error('Failed to fetch bookings:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to fetch your bookings. Please try again.',
-        variant: 'destructive',
-      });
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
-  const handleCancelBooking = async (bookingId: string) => {
+  const cancelBooking = async (bookingId: string) => {
+    setCancellingBooking(bookingId);
     try {
-      const response = await fetch(`/api/bookings/${bookingId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'CANCELLED' }),
+      const response = await fetch(`/api/bookings/${bookingId}/cancel`, {
+        method: 'POST',
       });
-
+      
       if (response.ok) {
-        setBookings(prev => 
-          prev.map(booking => 
-            booking.id === bookingId 
-              ? { ...booking, status: 'CANCELLED' }
-              : booking
-          )
-        );
+        setBookings(bookings.map(b => 
+          b.id === bookingId ? { ...b, status: 'CANCELLED' } : b
+        ));
         toast({
           title: 'Booking cancelled',
           description: 'Your booking has been cancelled successfully.',
@@ -120,314 +86,305 @@ export default function MyBookingsPage() {
         throw new Error('Failed to cancel booking');
       }
     } catch (error) {
-      console.error('Failed to cancel booking:', error);
       toast({
         title: 'Error',
-        description: 'Failed to cancel booking. Please contact the venue directly.',
+        description: 'Failed to cancel booking. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setCancellingBooking(null);
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'CONFIRMED': return 'bg-green-100 text-green-800';
-      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
-      case 'CANCELLED': return 'bg-red-100 text-red-800';
-      case 'COMPLETED': return 'bg-blue-100 text-blue-800';
-      case 'NO_SHOW': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'CONFIRMED':
+        return <Badge className="bg-green-600">Confirmed</Badge>;
+      case 'PENDING':
+        return <Badge variant="outline" className="border-orange-500 text-orange-700">Pending</Badge>;
+      case 'CANCELLED':
+        return <Badge variant="destructive">Cancelled</Badge>;
+      case 'COMPLETED':
+        return <Badge variant="secondary">Completed</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
     }
   };
 
-  const getServiceTypeLabel = (type: string) => {
-    switch (type) {
-      case 'DINE_IN': return 'Dine In';
-      case 'TAKEAWAY': return 'Takeaway';
-      case 'DELIVERY': return 'Delivery';
-      case 'EVENT': return 'Event';
-      default: return type;
+  const getPaymentBadge = (status: string) => {
+    switch (status) {
+      case 'PAID':
+        return <Badge className="bg-green-600">Paid</Badge>;
+      case 'PENDING':
+        return <Badge variant="outline" className="border-orange-500 text-orange-700">Pending</Badge>;
+      case 'FAILED':
+        return <Badge variant="destructive">Failed</Badge>;
+      case 'REFUNDED':
+        return <Badge variant="secondary">Refunded</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
     }
+  };
+
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   const canCancelBooking = (booking: Booking) => {
-    const bookingDate = new Date(`${booking.date} ${booking.time}`);
+    const startTime = new Date(booking.startTime);
     const now = new Date();
-    const hoursDiff = (bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+    const hoursUntilStart = (startTime.getTime() - now.getTime()) / (1000 * 60 * 60);
     
-    return booking.status === 'PENDING' || booking.status === 'CONFIRMED' && hoursDiff > 2;
+    return booking.status === 'CONFIRMED' && hoursUntilStart > 24; // Can cancel if more than 24 hours before start
   };
 
-  const upcomingBookings = bookings.filter(booking => {
-    const bookingDate = new Date(`${booking.date} ${booking.time}`);
-    return bookingDate > new Date() && booking.status !== 'CANCELLED';
-  });
-
-  const pastBookings = bookings.filter(booking => {
-    const bookingDate = new Date(`${booking.date} ${booking.time}`);
-    return bookingDate <= new Date() || booking.status === 'CANCELLED';
-  });
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
+      <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link href="/book" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
-              <ArrowLeft className="h-5 w-5" />
-              <span>Back to venues</span>
-            </Link>
-            <Link href="/" className="flex items-center space-x-2">
-              <Clock className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">Sully</span>
-            </Link>
-            <Link href="/book">
-              <Button variant="ghost">Book a Table</Button>
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+                <ArrowLeft className="h-5 w-5" />
+                <span>Back to Home</span>
+              </Link>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <div className="flex items-center space-x-2">
+                <CalendarDays className="h-6 w-6 text-orange-600" />
+                <span className="text-xl font-semibold text-gray-900">My Bookings</span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link href="/book">
+                <Button className="bg-orange-600 hover:bg-orange-700 text-white">
+                  Book New Venue
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Page Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8 }}
+          className="mb-8"
         >
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              My Bookings
-            </h1>
-            <p className="text-xl text-gray-600">
-              Find and manage your restaurant reservations
-            </p>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            My Bookings
+          </h1>
+          <p className="text-gray-600">
+            View and manage all your venue bookings
+          </p>
+        </motion.div>
 
-          {/* Search Form */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Search className="h-5 w-5" />
-                <span>Find Your Bookings</span>
-              </CardTitle>
-              <CardDescription>
-                Enter your email or phone number to view your bookings
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSearch} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="john@example.com"
-                      value={searchData.email}
-                      onChange={(e) => setSearchData(prev => ({ ...prev, email: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="+44 7123 456789"
-                      value={searchData.phone}
-                      onChange={(e) => setSearchData(prev => ({ ...prev, phone: e.target.value }))}
-                    />
-                  </div>
-                </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Searching...' : 'Find My Bookings'}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Bookings Results */}
-          {hasSearched && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              {bookings.length === 0 ? (
-                <Card className="text-center py-12">
-                  <CardContent>
-                    <CalendarDays className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      No bookings found
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      We couldn't find any bookings with the provided information.
-                    </p>
-                    <Link href="/book">
-                      <Button>Make a Booking</Button>
-                    </Link>
+        {/* Bookings List */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+        >
+          {loadingData ? (
+            <div className="space-y-6">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="flex items-start space-x-4">
+                      <div className="h-24 w-24 bg-gray-200 rounded-lg"></div>
+                      <div className="flex-1">
+                        <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded mb-4 w-3/4"></div>
+                        <div className="flex space-x-4">
+                          <div className="h-4 bg-gray-200 rounded w-20"></div>
+                          <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
-              ) : (
-                <Tabs defaultValue="upcoming" className="space-y-6">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="upcoming">
-                      Upcoming ({upcomingBookings.length})
-                    </TabsTrigger>
-                    <TabsTrigger value="past">
-                      Past ({pastBookings.length})
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="upcoming" className="space-y-4">
-                    {upcomingBookings.length === 0 ? (
-                      <Card className="text-center py-8">
-                        <CardContent>
-                          <p className="text-gray-600">No upcoming bookings</p>
-                        </CardContent>
-                      </Card>
-                    ) : (
-                      upcomingBookings.map((booking, index) => (
-                        <motion.div
-                          key={booking.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                        >
-                          <Card className="hover:shadow-lg transition-shadow">
-                            <CardContent className="p-6">
-                              <div className="flex justify-between items-start mb-4">
+              ))}
+            </div>
+          ) : bookings.length === 0 ? (
+            <Card>
+              <CardContent className="text-center py-12">
+                <CalendarDays className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No bookings yet</h3>
+                <p className="text-gray-600 mb-6">You haven't made any venue bookings yet. Start exploring amazing venues!</p>
+                <Link href="/book">
+                  <Button className="bg-orange-600 hover:bg-orange-700 text-white">
+                    Browse Venues
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-6">
+              {bookings.map((booking, index) => (
+                <motion.div
+                  key={booking.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: index * 0.1 }}
+                >
+                  <Card className="hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex items-start space-x-6">
+                        {/* Venue Image */}
+                        <div className="flex-shrink-0">
+                          <div className="relative h-24 w-24 rounded-lg overflow-hidden">
+                            {booking.venue.images && booking.venue.images.length > 0 ? (
+                              <Image
+                                src={booking.venue.images[0]}
+                                alt={booking.venue.name}
+                                fill
+                                className="object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                                <CalendarDays className="h-8 w-8 text-orange-400" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Booking Details */}
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between mb-4">
+                            <div>
+                              <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                                {booking.venue.name}
+                              </h3>
+                              <div className="flex items-center text-gray-600 mb-2">
+                                <MapPin className="h-4 w-4 mr-1" />
+                                <span className="text-sm">
+                                  {booking.venue.address}, {booking.venue.city}, {booking.venue.state}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              {getStatusBadge(booking.status)}
+                              {getPaymentBadge(booking.paymentStatus)}
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div className="space-y-2">
+                              <div className="flex items-center text-gray-600">
+                                <Clock className="h-4 w-4 mr-2" />
                                 <div>
-                                  <h3 className="text-xl font-bold text-gray-900">
-                                    {booking.venue.name}
-                                  </h3>
-                                  <p className="text-gray-600 flex items-center space-x-1">
-                                    <MapPin className="h-4 w-4" />
-                                    <span>{booking.venue.address}, {booking.venue.city}</span>
+                                  <p className="text-sm font-medium">Event Time</p>
+                                  <p className="text-sm">
+                                    {formatDateTime(booking.startTime)} - {formatDateTime(booking.endTime)}
                                   </p>
                                 </div>
-                                <Badge className={getStatusColor(booking.status)}>
-                                  {booking.status}
-                                </Badge>
                               </div>
-
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                <div className="flex items-center space-x-2">
-                                  <CalendarDays className="h-4 w-4 text-gray-400" />
-                                  <span>{new Date(booking.date).toLocaleDateString()}</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <Clock className="h-4 w-4 text-gray-400" />
-                                  <span>{booking.time}</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-sm font-medium">
-                                    {booking.partySize} guests • {getServiceTypeLabel(booking.serviceType)}
-                                  </span>
+                              
+                              <div className="flex items-center text-gray-600">
+                                <DollarSign className="h-4 w-4 mr-2" />
+                                <div>
+                                  <p className="text-sm font-medium">Total Amount</p>
+                                  <p className="text-sm">${booking.totalAmount}</p>
                                 </div>
                               </div>
-
-                              {booking.table && (
-                                <p className="text-sm text-gray-600 mb-2">
-                                  Table: {booking.table.name}
-                                </p>
-                              )}
-
-                              {booking.specialRequests && (
-                                <p className="text-sm text-gray-600 mb-4">
-                                  Special requests: {booking.specialRequests}
-                                </p>
-                              )}
-
-                              <div className="flex justify-between items-center">
-                                <div className="text-sm text-gray-500">
-                                  Booking ID: {booking.id.slice(-8)}
+                            </div>
+                            
+                            <div className="space-y-2">
+                              {booking.venue.phone && (
+                                <div className="flex items-center text-gray-600">
+                                  <Phone className="h-4 w-4 mr-2" />
+                                  <div>
+                                    <p className="text-sm font-medium">Venue Phone</p>
+                                    <p className="text-sm">{booking.venue.phone}</p>
+                                  </div>
                                 </div>
-                                <div className="flex space-x-2">
-                                  <a href={`tel:${booking.venue.phone}`}>
-                                    <Button variant="outline" size="sm">
-                                      <Phone className="h-4 w-4 mr-1" />
-                                      Call
-                                    </Button>
-                                  </a>
-                                  {canCancelBooking(booking) && (
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      onClick={() => handleCancelBooking(booking.id)}
-                                    >
-                                      Cancel
-                                    </Button>
+                              )}
+                              
+                              {booking.venue.email && (
+                                <div className="flex items-center text-gray-600">
+                                  <Mail className="h-4 w-4 mr-2" />
+                                  <div>
+                                    <p className="text-sm font-medium">Venue Email</p>
+                                    <p className="text-sm">{booking.venue.email}</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {booking.notes && (
+                            <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                              <div className="flex items-start">
+                                <FileText className="h-4 w-4 mr-2 mt-0.5 text-gray-600" />
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900 mb-1">Booking Notes</p>
+                                  <p className="text-sm text-gray-700">{booking.notes}</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center justify-between pt-4 border-t">
+                            <p className="text-sm text-gray-500">
+                              Booked on {formatDate(booking.createdAt)}
+                            </p>
+                            
+                            <div className="flex items-center space-x-3">
+                              <Link href={`/venue/${booking.venue.id}`}>
+                                <Button size="sm" variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+                                  View Venue
+                                </Button>
+                              </Link>
+                              
+                              {canCancelBooking(booking) && (
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => cancelBooking(booking.id)}
+                                  disabled={cancellingBooking === booking.id}
+                                >
+                                  {cancellingBooking === booking.id ? (
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                  ) : (
+                                    <XCircle className="h-4 w-4 mr-2" />
                                   )}
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      ))
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value="past" className="space-y-4">
-                    {pastBookings.length === 0 ? (
-                      <Card className="text-center py-8">
-                        <CardContent>
-                          <p className="text-gray-600">No past bookings</p>
-                        </CardContent>
-                      </Card>
-                    ) : (
-                      pastBookings.map((booking, index) => (
-                        <motion.div
-                          key={booking.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                        >
-                          <Card className="opacity-75">
-                            <CardContent className="p-6">
-                              <div className="flex justify-between items-start mb-4">
-                                <div>
-                                  <h3 className="text-xl font-bold text-gray-900">
-                                    {booking.venue.name}
-                                  </h3>
-                                  <p className="text-gray-600 flex items-center space-x-1">
-                                    <MapPin className="h-4 w-4" />
-                                    <span>{booking.venue.address}, {booking.venue.city}</span>
-                                  </p>
-                                </div>
-                                <Badge className={getStatusColor(booking.status)}>
-                                  {booking.status}
-                                </Badge>
-                              </div>
-
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                <div className="flex items-center space-x-2">
-                                  <CalendarDays className="h-4 w-4 text-gray-400" />
-                                  <span>{new Date(booking.date).toLocaleDateString()}</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <Clock className="h-4 w-4 text-gray-400" />
-                                  <span>{booking.time}</span>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-sm font-medium">
-                                    {booking.partySize} guests • {getServiceTypeLabel(booking.serviceType)}
-                                  </span>
-                                </div>
-                              </div>
-
-                              <div className="text-sm text-gray-500">
-                                Booking ID: {booking.id.slice(-8)}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      ))
-                    )}
-                  </TabsContent>
-                </Tabs>
-              )}
-            </motion.div>
+                                  Cancel Booking
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
           )}
         </motion.div>
       </div>

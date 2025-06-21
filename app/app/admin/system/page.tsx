@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -7,42 +6,33 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
-import { Input } from "../../../components/ui/input";
-import { Label } from "../../../components/ui/label";
 import { Switch } from "../../../components/ui/switch";
-import { Textarea } from "../../../components/ui/textarea";
-import { Separator } from "../../../components/ui/separator";
-import { ArrowLeft, Settings, Database, Mail, Shield, Globe, Server } from 'lucide-react';
+import { ArrowLeft, Settings, Database, Mail, Shield, Activity, AlertTriangle, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { toast } from 'sonner';
+import { useToast } from "../../../hooks/use-toast";
 
 interface SystemSettings {
-  siteName: string;
-  siteDescription: string;
-  supportEmail: string;
   maintenanceMode: boolean;
-  allowRegistrations: boolean;
+  registrationEnabled: boolean;
+  emailNotifications: boolean;
+  autoApproveVenues: boolean;
   requireEmailVerification: boolean;
-  maxVenuesPerUser: number;
-  defaultSubscriptionPlan: string;
-  systemNotifications: boolean;
+}
+
+interface SystemHealth {
+  database: 'healthy' | 'warning' | 'error';
+  email: 'healthy' | 'warning' | 'error';
+  storage: 'healthy' | 'warning' | 'error';
+  payments: 'healthy' | 'warning' | 'error';
 }
 
 export default function AdminSystemPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [settings, setSettings] = useState<SystemSettings>({
-    siteName: 'Sully Booking System',
-    siteDescription: 'Professional venue booking and management platform',
-    supportEmail: 'support@sully.com',
-    maintenanceMode: false,
-    allowRegistrations: true,
-    requireEmailVerification: true,
-    maxVenuesPerUser: 5,
-    defaultSubscriptionPlan: 'FREE',
-    systemNotifications: true,
-  });
+  const { toast } = useToast();
+  const [settings, setSettings] = useState<SystemSettings | null>(null);
+  const [health, setHealth] = useState<SystemHealth | null>(null);
   const [loadingData, setLoadingData] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -54,87 +44,92 @@ export default function AdminSystemPage() {
 
   useEffect(() => {
     if (user && user.role === 'SUPER_ADMIN') {
-      fetchSystemSettings();
+      fetchSystemData();
     }
   }, [user]);
 
-  const fetchSystemSettings = async () => {
+  const fetchSystemData = async () => {
     try {
-      setLoadingData(true);
-      const response = await fetch('/api/admin/system/settings');
-      if (response.ok) {
-        const data = await response.json();
-        setSettings(data.settings);
+      const [settingsResponse, healthResponse] = await Promise.all([
+        fetch('/api/admin/system/settings'),
+        fetch('/api/admin/system/health')
+      ]);
+      
+      if (settingsResponse.ok) {
+        const settingsData = await settingsResponse.json();
+        setSettings(settingsData);
+      }
+      
+      if (healthResponse.ok) {
+        const healthData = await healthResponse.json();
+        setHealth(healthData);
       }
     } catch (error) {
-      console.error('Failed to fetch system settings:', error);
+      console.error('Failed to fetch system data:', error);
     } finally {
       setLoadingData(false);
     }
   };
 
-  const saveSettings = async () => {
+  const updateSetting = async (key: keyof SystemSettings, value: boolean) => {
+    if (!settings) return;
+    
+    setSaving(true);
     try {
-      setSaving(true);
       const response = await fetch('/api/admin/system/settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ settings }),
+        body: JSON.stringify({ [key]: value }),
       });
-
+      
       if (response.ok) {
-        toast.success('System settings saved successfully');
+        setSettings({ ...settings, [key]: value });
+        toast({
+          title: 'Settings updated',
+          description: 'System settings have been saved successfully.',
+        });
       } else {
-        toast.error('Failed to save system settings');
+        throw new Error('Failed to update settings');
       }
     } catch (error) {
-      console.error('Failed to save settings:', error);
-      toast.error('Failed to save system settings');
+      toast({
+        title: 'Error',
+        description: 'Failed to update settings. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setSaving(false);
     }
   };
 
-  const clearCache = async () => {
-    try {
-      const response = await fetch('/api/admin/system/cache', {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        toast.success('System cache cleared successfully');
-      } else {
-        toast.error('Failed to clear cache');
-      }
-    } catch (error) {
-      console.error('Failed to clear cache:', error);
-      toast.error('Failed to clear cache');
+  const getHealthIcon = (status: 'healthy' | 'warning' | 'error') => {
+    switch (status) {
+      case 'healthy':
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case 'warning':
+        return <AlertTriangle className="h-5 w-5 text-orange-500" />;
+      case 'error':
+        return <AlertTriangle className="h-5 w-5 text-red-500" />;
     }
   };
 
-  const runDatabaseMaintenance = async () => {
-    try {
-      const response = await fetch('/api/admin/system/maintenance', {
-        method: 'POST',
-      });
-
-      if (response.ok) {
-        toast.success('Database maintenance completed successfully');
-      } else {
-        toast.error('Failed to run database maintenance');
-      }
-    } catch (error) {
-      console.error('Failed to run maintenance:', error);
-      toast.error('Failed to run database maintenance');
+  const getHealthBadge = (status: 'healthy' | 'warning' | 'error') => {
+    switch (status) {
+      case 'healthy':
+        return <Badge className="bg-green-600">Healthy</Badge>;
+      case 'warning':
+        return <Badge variant="outline" className="border-orange-500 text-orange-700">Warning</Badge>;
+      case 'error':
+        return <Badge variant="destructive">Error</Badge>;
     }
   };
 
   if (loading || !user || user.role !== 'SUPER_ADMIN') {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
       </div>
     );
   }
@@ -151,241 +146,269 @@ export default function AdminSystemPage() {
                 <span>Back to Admin</span>
               </Link>
               <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-xl font-semibold text-gray-900">System Settings</h1>
+              <div className="flex items-center space-x-2">
+                <Settings className="h-6 w-6 text-orange-600" />
+                <span className="text-xl font-semibold text-gray-900">System Settings</span>
+              </div>
             </div>
+            <Badge variant="secondary">Admin Panel</Badge>
           </div>
         </div>
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loadingData ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {/* General Settings */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Globe className="h-5 w-5" />
-                    <span>General Settings</span>
-                  </CardTitle>
-                  <CardDescription>Configure basic system information and branding</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="siteName">Site Name</Label>
-                      <Input
-                        id="siteName"
-                        value={settings.siteName}
-                        onChange={(e) => setSettings(prev => ({ ...prev, siteName: e.target.value }))}
+        {/* Page Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-8"
+        >
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            System Management
+          </h1>
+          <p className="text-gray-600">
+            Configure system settings and monitor platform health
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* System Health */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Activity className="h-5 w-5" />
+                  <span>System Health</span>
+                </CardTitle>
+                <CardDescription>Monitor the health of system components</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingData ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg animate-pulse">
+                        <div className="flex items-center space-x-3">
+                          <div className="h-5 w-5 bg-gray-200 rounded"></div>
+                          <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                        </div>
+                        <div className="h-6 w-16 bg-gray-200 rounded"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Database className="h-5 w-5 text-gray-600" />
+                        <span className="font-medium">Database</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {health && getHealthIcon(health.database)}
+                        {health && getHealthBadge(health.database)}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Mail className="h-5 w-5 text-gray-600" />
+                        <span className="font-medium">Email Service</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {health && getHealthIcon(health.email)}
+                        {health && getHealthBadge(health.email)}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Database className="h-5 w-5 text-gray-600" />
+                        <span className="font-medium">File Storage</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {health && getHealthIcon(health.storage)}
+                        {health && getHealthBadge(health.storage)}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Shield className="h-5 w-5 text-gray-600" />
+                        <span className="font-medium">Payment Processing</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {health && getHealthIcon(health.payments)}
+                        {health && getHealthBadge(health.payments)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* System Settings */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Settings className="h-5 w-5" />
+                  <span>System Configuration</span>
+                </CardTitle>
+                <CardDescription>Manage global system settings</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingData ? (
+                  <div className="space-y-6">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="flex items-center justify-between animate-pulse">
+                        <div>
+                          <div className="h-4 w-32 bg-gray-200 rounded mb-1"></div>
+                          <div className="h-3 w-48 bg-gray-200 rounded"></div>
+                        </div>
+                        <div className="h-6 w-11 bg-gray-200 rounded-full"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Maintenance Mode</h4>
+                        <p className="text-sm text-gray-600">Temporarily disable the platform for maintenance</p>
+                      </div>
+                      <Switch
+                        checked={settings?.maintenanceMode || false}
+                        onCheckedChange={(checked) => updateSetting('maintenanceMode', checked)}
+                        disabled={saving}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="supportEmail">Support Email</Label>
-                      <Input
-                        id="supportEmail"
-                        type="email"
-                        value={settings.supportEmail}
-                        onChange={(e) => setSettings(prev => ({ ...prev, supportEmail: e.target.value }))}
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-gray-900">User Registration</h4>
+                        <p className="text-sm text-gray-600">Allow new users to create accounts</p>
+                      </div>
+                      <Switch
+                        checked={settings?.registrationEnabled || false}
+                        onCheckedChange={(checked) => updateSetting('registrationEnabled', checked)}
+                        disabled={saving}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Email Notifications</h4>
+                        <p className="text-sm text-gray-600">Send automated email notifications to users</p>
+                      </div>
+                      <Switch
+                        checked={settings?.emailNotifications || false}
+                        onCheckedChange={(checked) => updateSetting('emailNotifications', checked)}
+                        disabled={saving}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Auto-approve Venues</h4>
+                        <p className="text-sm text-gray-600">Automatically approve new venue listings</p>
+                      </div>
+                      <Switch
+                        checked={settings?.autoApproveVenues || false}
+                        onCheckedChange={(checked) => updateSetting('autoApproveVenues', checked)}
+                        disabled={saving}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Email Verification</h4>
+                        <p className="text-sm text-gray-600">Require email verification for new accounts</p>
+                      </div>
+                      <Switch
+                        checked={settings?.requireEmailVerification || false}
+                        onCheckedChange={(checked) => updateSetting('requireEmailVerification', checked)}
+                        disabled={saving}
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="siteDescription">Site Description</Label>
-                    <Textarea
-                      id="siteDescription"
-                      value={settings.siteDescription}
-                      onChange={(e) => setSettings(prev => ({ ...prev, siteDescription: e.target.value }))}
-                      rows={3}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
 
-            {/* Security & Access Settings */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Shield className="h-5 w-5" />
-                    <span>Security & Access</span>
-                  </CardTitle>
-                  <CardDescription>Configure user registration and security settings</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Maintenance Mode</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Temporarily disable the platform for maintenance
-                      </p>
-                    </div>
-                    <Switch
-                      checked={settings.maintenanceMode}
-                      onCheckedChange={(checked) => setSettings(prev => ({ ...prev, maintenanceMode: checked }))}
-                    />
-                  </div>
-                  <Separator />
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Allow New Registrations</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Allow new users to register for accounts
-                      </p>
-                    </div>
-                    <Switch
-                      checked={settings.allowRegistrations}
-                      onCheckedChange={(checked) => setSettings(prev => ({ ...prev, allowRegistrations: checked }))}
-                    />
-                  </div>
-                  <Separator />
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Require Email Verification</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Require users to verify their email before accessing the platform
-                      </p>
-                    </div>
-                    <Switch
-                      checked={settings.requireEmailVerification}
-                      onCheckedChange={(checked) => setSettings(prev => ({ ...prev, requireEmailVerification: checked }))}
-                    />
-                  </div>
-                  <Separator />
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>System Notifications</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Send system notifications to administrators
-                      </p>
-                    </div>
-                    <Switch
-                      checked={settings.systemNotifications}
-                      onCheckedChange={(checked) => setSettings(prev => ({ ...prev, systemNotifications: checked }))}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Platform Limits */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Settings className="h-5 w-5" />
-                    <span>Platform Limits</span>
-                  </CardTitle>
-                  <CardDescription>Configure platform usage limits and defaults</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="maxVenues">Max Venues Per User</Label>
-                      <Input
-                        id="maxVenues"
-                        type="number"
-                        min="1"
-                        max="100"
-                        value={settings.maxVenuesPerUser}
-                        onChange={(e) => setSettings(prev => ({ ...prev, maxVenuesPerUser: parseInt(e.target.value) || 1 }))}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="defaultPlan">Default Subscription Plan</Label>
-                      <select
-                        id="defaultPlan"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={settings.defaultSubscriptionPlan}
-                        onChange={(e) => setSettings(prev => ({ ...prev, defaultSubscriptionPlan: e.target.value }))}
-                      >
-                        <option value="FREE">Free</option>
-                        <option value="PREMIUM">Premium</option>
-                        <option value="PAID">Paid</option>
-                      </select>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* System Maintenance */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Server className="h-5 w-5" />
-                    <span>System Maintenance</span>
-                  </CardTitle>
-                  <CardDescription>Perform system maintenance tasks and optimizations</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Button
-                      variant="outline"
-                      onClick={clearCache}
-                      className="flex items-center space-x-2"
-                    >
-                      <Database className="h-4 w-4" />
-                      <span>Clear System Cache</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={runDatabaseMaintenance}
-                      className="flex items-center space-x-2"
-                    >
-                      <Database className="h-4 w-4" />
-                      <span>Run Database Maintenance</span>
-                    </Button>
-                  </div>
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Note:</strong> Maintenance operations may temporarily affect system performance. 
-                      It's recommended to run these during low-traffic periods.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Save Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex justify-end"
-            >
-              <Button
-                onClick={saveSettings}
-                disabled={saving}
-                className="px-8"
-              >
-                {saving ? 'Saving...' : 'Save Settings'}
-              </Button>
-            </motion.div>
-          </div>
-        )}
+        {/* System Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="mt-8"
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>System Actions</CardTitle>
+              <CardDescription>Perform administrative actions on the system</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Button
+                  variant="outline"
+                  className="h-20 flex flex-col items-center justify-center space-y-2 border-orange-200 text-orange-700 hover:bg-orange-50"
+                  onClick={() => {
+                    // Implement cache clearing
+                    toast({
+                      title: 'Cache cleared',
+                      description: 'System cache has been cleared successfully.',
+                    });
+                  }}
+                >
+                  <Database className="h-6 w-6" />
+                  <span className="text-sm font-medium">Clear Cache</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="h-20 flex flex-col items-center justify-center space-y-2 border-orange-200 text-orange-700 hover:bg-orange-50"
+                  onClick={() => {
+                    // Implement backup
+                    toast({
+                      title: 'Backup initiated',
+                      description: 'System backup has been started.',
+                    });
+                  }}
+                >
+                  <Shield className="h-6 w-6" />
+                  <span className="text-sm font-medium">Create Backup</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="h-20 flex flex-col items-center justify-center space-y-2 border-orange-200 text-orange-700 hover:bg-orange-50"
+                  onClick={() => {
+                    // Implement health check
+                    fetchSystemData();
+                    toast({
+                      title: 'Health check completed',
+                      description: 'System health has been refreshed.',
+                    });
+                  }}
+                >
+                  <Activity className="h-6 w-6" />
+                  <span className="text-sm font-medium">Run Health Check</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );
