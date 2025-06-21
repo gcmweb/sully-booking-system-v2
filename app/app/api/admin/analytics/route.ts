@@ -2,13 +2,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from "../../../../lib/db";
 import { requireAuth } from "../../../../lib/auth";
-import { UserRole } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth([UserRole.SUPER_ADMIN]);
+    const user = await requireAuth([Role.SUPER_ADMIN]);
     const { searchParams } = new URL(request.url);
     const range = searchParams.get('range') || '30d';
 
