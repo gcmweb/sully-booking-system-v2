@@ -124,7 +124,7 @@ export default function AdminVenuesPage() {
     });
   };
 
-  const cities = [...new Set(venues.map(venue => venue.city))].sort();
+  const cities = Array.from(new Set(venues.map(venue => venue.city))).sort();
 
   if (loading || !user || user.role !== 'SUPER_ADMIN') {
     return (
