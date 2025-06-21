@@ -353,7 +353,7 @@ export default function RegisterPage() {
               Contact our support team
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
