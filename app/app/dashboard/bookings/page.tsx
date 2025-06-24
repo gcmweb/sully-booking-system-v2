@@ -1,545 +1,443 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
+import { useAuth } from "../../../components/auth-provider";
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
+import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../../components/ui/dialog";
-import { CalendarDays, Users, Clock, MapPin, Phone, Mail, Search, Filter, MoreHorizontal, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { useToast } from "../../../hooks/use-toast";
+import { Input } from "../../../components/ui/input";
+import { CalendarDays, ArrowLeft, Search, Filter, Eye, CheckCircle, XCircle, Clock, Mail, Phone, MapPin } from 'lucide-react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useToast } from "../../../hooks/use-toast";
 
 interface Booking {
   id: string;
+  startTime: string;
+  endTime: string;
+  totalAmount: number;
   status: string;
-  date: string;
-  time: string;
-  partySize: number;
-  serviceType: string;
+  paymentStatus: string;
   customerName: string;
   customerEmail: string;
-  customerPhone: string;
-  specialRequests: string;
-  source: string;
+  customerPhone?: string;
+  notes?: string;
   createdAt: string;
   venue: {
     id: string;
     name: string;
-    address: string;
     city: string;
-  };
-  table?: {
-    id: string;
-    name: string;
-  };
-  customer?: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
+    state: string;
   };
 }
 
-interface Venue {
-  id: string;
-  name: string;
-}
-
-export default function BookingsPage() {
-  // Initialize all arrays with empty arrays to prevent undefined access
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [venues, setVenues] = useState<Venue[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    venueId: 'all',
-    status: 'all',
-    search: '',
-  });
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 10,
-    total: 0,
-    pages: 0,
-  });
+export default function DashboardBookingsPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const { toast } = useToast();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [updatingBooking, setUpdatingBooking] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchBookings();
-    fetchVenues();
-  }, [filters, pagination.page]);
+    if (!loading && !user) {
+      router.push('/auth/login');
+    }
+  }, [user, loading, router]);
+
+  useEffect(() => {
+    if (user) {
+      fetchBookings();
+    }
+  }, [user, currentPage, searchTerm, statusFilter]);
 
   const fetchBookings = async () => {
-    setLoading(true);
     try {
       const params = new URLSearchParams({
-        page: pagination.page.toString(),
-        limit: pagination.limit.toString(),
-        ...(filters.venueId && filters.venueId !== 'all' && { venueId: filters.venueId }),
-        ...(filters.status && filters.status !== 'all' && { status: filters.status }),
+        page: currentPage.toString(),
+        limit: '20',
+        ...(searchTerm && { search: searchTerm }),
+        ...(statusFilter && { status: statusFilter }),
       });
-
-      const response = await fetch(`/api/bookings?${params}`);
+      
+      const response = await fetch(`/api/dashboard/bookings?${params}`);
       if (response.ok) {
         const data = await response.json();
-        // Comprehensive null/undefined checks with fallback arrays
-        const safeBookings = Array.isArray(data?.bookings) ? data.bookings : [];
-        setBookings(safeBookings);
-        setPagination(prev => ({
-          ...prev,
-          total: data?.pagination?.total || 0,
-          pages: data?.pagination?.pages || 0,
-        }));
-      } else {
-        console.error('Failed to fetch bookings:', response.status, response.statusText);
-        setBookings([]);
-        setPagination(prev => ({
-          ...prev,
-          total: 0,
-          pages: 0,
-        }));
+        setBookings(data.bookings);
+        setTotalPages(data.totalPages);
       }
     } catch (error) {
       console.error('Failed to fetch bookings:', error);
-      setBookings([]);
-      setPagination(prev => ({
-        ...prev,
-        total: 0,
-        pages: 0,
-      }));
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
-  const fetchVenues = async () => {
+  const updateBookingStatus = async (bookingId: string, newStatus: string) => {
+    setUpdatingBooking(bookingId);
     try {
-      const response = await fetch('/api/venues');
-      if (response.ok) {
-        const data = await response.json();
-        // Comprehensive null/undefined checks with fallback arrays
-        const safeVenues = Array.isArray(data?.venues) ? data.venues : [];
-        setVenues(safeVenues);
-      } else {
-        console.error('Failed to fetch venues:', response.status, response.statusText);
-        setVenues([]);
-      }
-    } catch (error) {
-      console.error('Failed to fetch venues:', error);
-      setVenues([]);
-    }
-  };
-
-  const handleStatusChange = async (bookingId: string, newStatus: string) => {
-    try {
-      const response = await fetch(`/api/bookings/${bookingId}/status`, {
-        method: 'PUT',
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status: newStatus }),
       });
-
+      
       if (response.ok) {
-        // Ensure safe array operations
-        const safeBookings = Array.isArray(bookings) ? bookings : [];
-        setBookings(safeBookings.map(booking => 
-          booking?.id === bookingId 
-            ? { ...booking, status: newStatus }
-            : booking
+        setBookings(bookings.map(b => 
+          b.id === bookingId ? { ...b, status: newStatus } : b
         ));
         toast({
           title: 'Booking updated',
-          description: `Booking status changed to ${newStatus.toLowerCase()}.`,
+          description: `Booking has been ${newStatus.toLowerCase()}.`,
         });
       } else {
-        throw new Error('Failed to update booking status');
+        throw new Error('Failed to update booking');
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: 'Error',
-        description: error.message,
+        description: 'Failed to update booking status. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setUpdatingBooking(null);
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'CONFIRMED': return 'bg-green-100 text-green-800';
-      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
-      case 'CANCELLED': return 'bg-red-100 text-red-800';
-      case 'COMPLETED': return 'bg-blue-100 text-blue-800';
-      case 'NO_SHOW': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'CONFIRMED':
+        return <Badge className="bg-green-600">Confirmed</Badge>;
+      case 'PENDING':
+        return <Badge variant="outline" className="border-orange-500 text-orange-700">Pending</Badge>;
+      case 'CANCELLED':
+        return <Badge variant="destructive">Cancelled</Badge>;
+      case 'COMPLETED':
+        return <Badge variant="secondary">Completed</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
     }
   };
 
-  const getServiceTypeLabel = (type: string) => {
-    switch (type) {
-      case 'DINE_IN': return 'Dine In';
-      case 'TAKEAWAY': return 'Takeaway';
-      case 'DELIVERY': return 'Delivery';
-      case 'EVENT': return 'Event';
-      default: return type;
+  const getPaymentBadge = (status: string) => {
+    switch (status) {
+      case 'PAID':
+        return <Badge className="bg-green-600">Paid</Badge>;
+      case 'PENDING':
+        return <Badge variant="outline" className="border-orange-500 text-orange-700">Pending</Badge>;
+      case 'FAILED':
+        return <Badge variant="destructive">Failed</Badge>;
+      case 'REFUNDED':
+        return <Badge variant="secondary">Refunded</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
     }
   };
 
-  const getSourceLabel = (source: string) => {
-    switch (source) {
-      case 'DIRECT': return 'Direct';
-      case 'WIDGET': return 'Widget';
-      case 'API': return 'API';
-      case 'PHONE': return 'Phone';
-      case 'WALK_IN': return 'Walk-in';
-      default: return source;
-    }
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
-  // Ensure safe array operations for filtering
-  const safeBookings = Array.isArray(bookings) ? bookings : [];
-  const safeVenues = Array.isArray(venues) ? venues : [];
-  
-  const todayBookings = safeBookings.filter(booking => {
-    try {
-      if (!booking?.date) return false;
-      const bookingDate = new Date(booking.date);
-      const today = new Date();
-      return bookingDate.toDateString() === today.toDateString();
-    } catch {
-      return false;
-    }
-  });
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
-  const upcomingBookings = safeBookings.filter(booking => {
-    try {
-      if (!booking?.date) return false;
-      const bookingDate = new Date(booking.date);
-      const today = new Date();
-      return bookingDate > today;
-    } catch {
-      return false;
-    }
-  });
-
-  const pendingBookings = safeBookings.filter(booking => booking?.status === 'PENDING');
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Bookings</h1>
-          <p className="text-gray-600">Manage all your venue bookings</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
+              <Link href="/dashboard" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+                <ArrowLeft className="h-5 w-5" />
+                <span>Back to Dashboard</span>
+              </Link>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <div className="flex items-center space-x-2">
+                <CalendarDays className="h-6 w-6 text-orange-600" />
+                <span className="text-xl font-semibold text-gray-900">Bookings</span>
+              </div>
+            </div>
+            <Badge variant="secondary">Dashboard</Badge>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Page Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8 }}
+          className="mb-8"
         >
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Today's Bookings</p>
-                  <p className="text-3xl font-bold text-gray-900">{todayBookings.length}</p>
-                </div>
-                <CalendarDays className="h-8 w-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Venue Bookings
+          </h1>
+          <p className="text-gray-600">
+            Manage all bookings for your venues
+          </p>
         </motion.div>
 
+        {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="bg-white rounded-lg shadow-sm p-6 mb-6 border"
         >
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Upcoming</p>
-                  <p className="text-3xl font-bold text-gray-900">{upcomingBookings.length}</p>
-                </div>
-                <Clock className="h-8 w-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-3xl font-bold text-gray-900">{pendingBookings.length}</p>
-                </div>
-                <AlertCircle className="h-8 w-8 text-yellow-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                  <p className="text-3xl font-bold text-gray-900">{pagination?.total || 0}</p>
-                </div>
-                <Users className="h-8 w-8 text-purple-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-
-      {/* Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Search</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <Input
-                placeholder="Customer name, email, or phone..."
-                value={filters.search}
-                onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                placeholder="Search bookings..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Venue</label>
-              <Select value={filters.venueId} onValueChange={(value) => setFilters(prev => ({ ...prev, venueId: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All venues" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All venues</SelectItem>
-                  {safeVenues.filter(venue => venue?.id && venue?.name).map(venue => (
-                    <SelectItem key={venue.id} value={venue.id}>
-                      {venue.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Status</label>
-              <Select value={filters.status} onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All statuses</SelectItem>
-                  <SelectItem value="PENDING">Pending</SelectItem>
-                  <SelectItem value="CONFIRMED">Confirmed</SelectItem>
-                  <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                  <SelectItem value="COMPLETED">Completed</SelectItem>
-                  <SelectItem value="NO_SHOW">No Show</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-end">
-              <Button onClick={() => {
-                setFilters({ venueId: 'all', status: 'all', search: '' });
-                setPagination(prev => ({ ...prev, page: 1 }));
-              }}>
-                Clear Filters
-              </Button>
-            </div>
+            
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Status</option>
+              <option value="PENDING">Pending</option>
+              <option value="CONFIRMED">Confirmed</option>
+              <option value="CANCELLED">Cancelled</option>
+              <option value="COMPLETED">Completed</option>
+            </select>
+            
+            <Button 
+              onClick={() => {
+                setSearchTerm('');
+                setStatusFilter('');
+                setCurrentPage(1);
+              }}
+              variant="outline"
+              className="border-orange-200 text-orange-700 hover:bg-orange-50"
+            >
+              Clear Filters
+            </Button>
           </div>
-        </CardContent>
-      </Card>
+        </motion.div>
 
-      {/* Bookings List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Bookings</CardTitle>
-          <CardDescription>
-            {pagination?.total || 0} total bookings • Page {pagination?.page || 1} of {pagination?.pages || 1}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
+        {/* Bookings List */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          {loadingData ? (
             <div className="space-y-4">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="h-20 bg-gray-200 rounded"></div>
-                </div>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="h-12 w-12 bg-gray-200 rounded-full"></div>
+                        <div>
+                          <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                          <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="h-6 w-16 bg-gray-200 rounded"></div>
+                        <div className="h-8 w-20 bg-gray-200 rounded"></div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-          ) : safeBookings.length === 0 ? (
-            <div className="text-center py-12">
-              <CalendarDays className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No bookings found</h3>
-              <p className="text-gray-600">No bookings match your current filters.</p>
-            </div>
+          ) : bookings.length === 0 ? (
+            <Card>
+              <CardContent className="text-center py-12">
+                <CalendarDays className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No bookings found</h3>
+                <p className="text-gray-600 mb-6">You don't have any bookings yet or none match your search criteria.</p>
+                <Link href="/dashboard/venues">
+                  <Button className="bg-orange-600 hover:bg-orange-700 text-white">
+                    Manage Venues
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           ) : (
             <div className="space-y-4">
-              {safeBookings.map((booking, index) => (
-                <motion.div
-                  key={booking?.id || index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                >
-                  <Card className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex justify-between items-start mb-4">
+              {bookings.map((booking) => (
+                <Card key={booking.id} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-4">
+                        <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full">
+                          <CalendarDays className="h-6 w-6 text-orange-600" />
+                        </div>
+                        
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
                             <h3 className="text-lg font-semibold text-gray-900">
-                              {booking?.customerName || 'Unknown Customer'}
+                              {booking.customerName}
                             </h3>
-                            <Badge className={getStatusColor(booking?.status || 'UNKNOWN')}>
-                              {booking?.status || 'UNKNOWN'}
-                            </Badge>
-                            <Badge variant="outline">
-                              {getSourceLabel(booking?.source || 'UNKNOWN')}
-                            </Badge>
+                            {getStatusBadge(booking.status)}
+                            {getPaymentBadge(booking.paymentStatus)}
                           </div>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
-                            <div className="flex items-center space-x-2">
-                              <MapPin className="h-4 w-4" />
-                              <span>{booking?.venue?.name || 'Unknown Venue'}</span>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                            <div>
+                              <div className="flex items-center space-x-2 mb-1">
+                                <MapPin className="h-4 w-4" />
+                                <span className="font-medium">{booking.venue.name}</span>
+                              </div>
+                              <div className="flex items-center space-x-2 mb-1">
+                                <Clock className="h-4 w-4" />
+                                <span>{formatDateTime(booking.startTime)} - {formatDateTime(booking.endTime)}</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <span className="font-medium">Total: ${booking.totalAmount}</span>
+                              </div>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <CalendarDays className="h-4 w-4" />
-                              <span>{booking?.date ? new Date(booking.date).toLocaleDateString() : 'Unknown Date'}</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Clock className="h-4 w-4" />
-                              <span>{booking?.time || 'Unknown Time'}</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Users className="h-4 w-4" />
-                              <span>{booking?.partySize || 0} guests • {getServiceTypeLabel(booking?.serviceType || 'UNKNOWN')}</span>
-                            </div>
-                          </div>
-
-                          {booking?.table && (
-                            <p className="text-sm text-gray-600 mt-2">
-                              Table: {booking.table.name}
-                            </p>
-                          )}
-
-                          <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
-                            <div className="flex items-center space-x-1">
-                              <Mail className="h-4 w-4" />
-                              <span>{booking?.customerEmail || 'No email'}</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <Phone className="h-4 w-4" />
-                              <span>{booking?.customerPhone || 'No phone'}</span>
+                            
+                            <div>
+                              <div className="flex items-center space-x-2 mb-1">
+                                <Mail className="h-4 w-4" />
+                                <span>{booking.customerEmail}</span>
+                              </div>
+                              {booking.customerPhone && (
+                                <div className="flex items-center space-x-2 mb-1">
+                                  <Phone className="h-4 w-4" />
+                                  <span>{booking.customerPhone}</span>
+                                </div>
+                              )}
+                              <div className="text-xs text-gray-500">
+                                Booked on {formatDate(booking.createdAt)}
+                              </div>
                             </div>
                           </div>
-
-                          {booking?.specialRequests && (
-                            <p className="text-sm text-gray-600 mt-2">
-                              <strong>Special requests:</strong> {booking.specialRequests}
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="flex space-x-2">
-                          {booking?.status === 'PENDING' && (
-                            <>
-                              <Button
-                                size="sm"
-                                onClick={() => handleStatusChange(booking.id, 'CONFIRMED')}
-                              >
-                                <CheckCircle className="h-4 w-4 mr-1" />
-                                Confirm
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleStatusChange(booking.id, 'CANCELLED')}
-                              >
-                                <XCircle className="h-4 w-4 mr-1" />
-                                Cancel
-                              </Button>
-                            </>
-                          )}
                           
-                          {booking?.status === 'CONFIRMED' && (
-                            <Select onValueChange={(value) => handleStatusChange(booking.id, value)}>
-                              <SelectTrigger className="w-32">
-                                <SelectValue placeholder="Actions" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="COMPLETED">Mark Complete</SelectItem>
-                                <SelectItem value="NO_SHOW">Mark No Show</SelectItem>
-                                <SelectItem value="CANCELLED">Cancel</SelectItem>
-                              </SelectContent>
-                            </Select>
+                          {booking.notes && (
+                            <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                              <p className="text-sm text-gray-700">
+                                <span className="font-medium">Notes:</span> {booking.notes}
+                              </p>
+                            </div>
                           )}
                         </div>
                       </div>
-
-                      <div className="flex justify-between items-center text-xs text-gray-500">
-                        <span>Booking ID: {booking?.id?.slice(-8) || 'Unknown'}</span>
-                        <span>Created: {booking?.createdAt ? new Date(booking.createdAt).toLocaleDateString() : 'Unknown'}</span>
+                      
+                      <div className="flex items-center space-x-2">
+                        {booking.status === 'PENDING' && (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => updateBookingStatus(booking.id, 'CONFIRMED')}
+                              disabled={updatingBooking === booking.id}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              {updatingBooking === booking.id ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              ) : (
+                                <>
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Confirm
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => updateBookingStatus(booking.id, 'CANCELLED')}
+                              disabled={updatingBooking === booking.id}
+                            >
+                              <XCircle className="h-4 w-4 mr-1" />
+                              Cancel
+                            </Button>
+                          </>
+                        )}
+                        
+                        {booking.status === 'CONFIRMED' && (
+                          <Button
+                            size="sm"
+                            onClick={() => updateBookingStatus(booking.id, 'COMPLETED')}
+                            disabled={updatingBooking === booking.id}
+                            className="bg-orange-600 hover:bg-orange-700 text-white"
+                          >
+                            <CheckCircle className="h-4 w-4 mr-1" />
+                            Mark Complete
+                          </Button>
+                        )}
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-orange-200 text-orange-700 hover:bg-orange-50"
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View Details
+                        </Button>
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
-
-              {/* Pagination */}
-              {(pagination?.pages || 0) > 1 && (
-                <div className="flex justify-center items-center space-x-2 mt-6">
-                  <Button
-                    variant="outline"
-                    disabled={(pagination?.page || 1) === 1}
-                    onClick={() => setPagination(prev => ({ ...prev, page: Math.max(1, (prev?.page || 1) - 1) }))}
-                  >
-                    Previous
-                  </Button>
-                  
-                  {Array.from({ length: Math.min(5, pagination?.pages || 0) }, (_, i) => {
-                    const page = i + 1;
-                    return (
-                      <Button
-                        key={page}
-                        variant={(pagination?.page || 1) === page ? "default" : "outline"}
-                        onClick={() => setPagination(prev => ({ ...prev, page }))}
-                      >
-                        {page}
-                      </Button>
-                    );
-                  })}
-                  
-                  <Button
-                    variant="outline"
-                    disabled={(pagination?.page || 1) === (pagination?.pages || 1)}
-                    onClick={() => setPagination(prev => ({ ...prev, page: Math.min((pagination?.pages || 1), (prev?.page || 1) + 1) }))}
-                  >
-                    Next
-                  </Button>
-                </div>
-              )}
             </div>
           )}
-        </CardContent>
-      </Card>
+          
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-8">
+              <p className="text-sm text-gray-600">
+                Page {currentPage} of {totalPages}
+              </p>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </div>
     </div>
   );
 }

@@ -1,181 +1,253 @@
-
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Badge } from "./ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
-import { CheckCircle, AlertCircle, XCircle, Settings } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { useAuth } from './auth-provider';
 
-interface StripeConfig {
-  publishableKey?: string;
-  isLiveMode: boolean;
-  isDemoMode: boolean;
-  configValid: boolean;
-  hasConfigErrors: boolean;
+interface StripeStatus {
+  connected: boolean;
+  accountId?: string;
+  chargesEnabled: boolean;
+  payoutsEnabled: boolean;
+  requiresAction: boolean;
+  actionUrl?: string;
+  errors?: string[];
 }
 
 export function StripeStatusIndicator() {
-  const [config, setConfig] = useState<StripeConfig | null>(null);
+  const { user } = useAuth();
+  const [status, setStatus] = useState<StripeStatus | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [connecting, setConnecting] = useState(false);
 
   useEffect(() => {
-    async function fetchStripeConfig() {
-      try {
-        const response = await fetch('/api/stripe/config');
-        if (response.ok) {
-          const data = await response.json();
-          setConfig(data);
-        } else {
-          setError('Failed to fetch Stripe configuration');
-        }
-      } catch (err) {
-        setError('Error checking Stripe status');
-      } finally {
-        setLoading(false);
+    if (user) {
+      fetchStripeStatus();
+    }
+  }, [user]);
+
+  const fetchStripeStatus = async () => {
+    try {
+      const response = await fetch('/api/stripe/status');
+      if (response.ok) {
+        const data = await response.json();
+        setStatus(data);
       }
+    } catch (error) {
+      console.error('Failed to fetch Stripe status:', error);
+    } finally {
+      setLoading(false);
     }
-
-    fetchStripeConfig();
-  }, []);
-
-  if (loading) {
-    return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Payment System Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div>
-            <span>Checking payment system status...</span>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error || !config) {
-    return (
-      <Alert variant="destructive">
-        <XCircle className="h-4 w-4" />
-        <AlertTitle>Payment System Error</AlertTitle>
-        <AlertDescription>
-          {error || 'Unable to determine payment system status'}
-        </AlertDescription>
-      </Alert>
-    );
-  }
-
-  const getStatusInfo = () => {
-    if (config.isDemoMode) {
-      return {
-        status: 'Demo Mode',
-        variant: 'secondary' as const,
-        icon: <AlertCircle className="h-4 w-4" />,
-        description: 'Payment system is running in demo mode. No real payments are processed.',
-        color: 'text-yellow-600'
-      };
-    }
-
-    if (!config.configValid) {
-      return {
-        status: 'Configuration Error',
-        variant: 'destructive' as const,
-        icon: <XCircle className="h-4 w-4" />,
-        description: 'Payment system configuration has errors. Please check environment variables.',
-        color: 'text-red-600'
-      };
-    }
-
-    if (config.isLiveMode) {
-      return {
-        status: 'Live Mode',
-        variant: 'default' as const,
-        icon: <CheckCircle className="h-4 w-4" />,
-        description: 'Payment system is live and processing real payments.',
-        color: 'text-green-600'
-      };
-    }
-
-    return {
-      status: 'Test Mode',
-      variant: 'outline' as const,
-      icon: <AlertCircle className="h-4 w-4" />,
-      description: 'Payment system is in test mode. Use test cards for payments.',
-      color: 'text-blue-600'
-    };
   };
 
-  const statusInfo = getStatusInfo();
+  const handleConnect = async () => {
+    setConnecting(true);
+    try {
+      const response = await fetch('/api/stripe/connect', {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to connect Stripe:', error);
+    } finally {
+      setConnecting(false);
+    }
+  };
+
+  const getStatusIcon = () => {
+    if (loading) {
+      return <Loader2 className="h-5 w-5 animate-spin text-gray-400" />;
+    }
+    
+    if (!status?.connected) {
+      return <XCircle className="h-5 w-5 text-red-500" />;
+    }
+    
+    if (status.requiresAction) {
+      return <AlertCircle className="h-5 w-5 text-orange-500" />;
+    }
+    
+    if (status.chargesEnabled && status.payoutsEnabled) {
+      return <CheckCircle className="h-5 w-5 text-green-500" />;
+    }
+    
+    return <AlertCircle className="h-5 w-5 text-orange-500" />;
+  };
+
+  const getStatusText = () => {
+    if (loading) return 'Checking status...';
+    
+    if (!status?.connected) {
+      return 'Not connected';
+    }
+    
+    if (status.requiresAction) {
+      return 'Action required';
+    }
+    
+    if (status.chargesEnabled && status.payoutsEnabled) {
+      return 'Fully activated';
+    }
+    
+    return 'Setup in progress';
+  };
+
+  const getStatusDescription = () => {
+    if (loading) return 'Verifying your Stripe account status...';
+    
+    if (!status?.connected) {
+      return 'Connect your Stripe account to start accepting payments for your venue bookings.';
+    }
+    
+    if (status.requiresAction) {
+      return 'Your Stripe account requires additional information to complete setup.';
+    }
+    
+    if (status.chargesEnabled && status.payoutsEnabled) {
+      return 'Your Stripe account is fully set up and ready to process payments.';
+    }
+    
+    return 'Your Stripe account is being reviewed. This usually takes a few minutes.';
+  };
+
+  const getStatusBadge = () => {
+    if (loading) {
+      return <Badge variant="outline">Checking...</Badge>;
+    }
+    
+    if (!status?.connected) {
+      return <Badge variant="destructive">Disconnected</Badge>;
+    }
+    
+    if (status.requiresAction) {
+      return <Badge variant="outline" className="border-orange-500 text-orange-700">Action Required</Badge>;
+    }
+    
+    if (status.chargesEnabled && status.payoutsEnabled) {
+      return <Badge variant="default" className="bg-green-600">Active</Badge>;
+    }
+    
+    return <Badge variant="outline" className="border-orange-500 text-orange-700">Pending</Badge>;
+  };
 
   return (
-    <Card className="w-full">
+    <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
-          Payment System Status
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            {getStatusIcon()}
+            <span>Payment Processing</span>
+          </div>
+          {getStatusBadge()}
         </CardTitle>
+        <CardDescription>
+          {getStatusDescription()}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className={statusInfo.color}>
-              {statusInfo.icon}
-            </span>
-            <span className="font-medium">Status:</span>
+      
+      <CardContent>
+        {status?.errors && status.errors.length > 0 && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <h4 className="text-sm font-medium text-red-800 mb-2">Issues to resolve:</h4>
+            <ul className="text-sm text-red-700 space-y-1">
+              {status.errors.map((error, index) => (
+                <li key={index} className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>{error}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <Badge variant={statusInfo.variant} className="flex items-center gap-1">
-            {statusInfo.status}
-          </Badge>
+        )}
+        
+        <div className="space-y-3">
+          {status?.connected && (
+            <>
+              <div className="flex items-center justify-between py-2">
+                <span className="text-sm text-gray-600">Accept Payments</span>
+                <div className="flex items-center space-x-2">
+                  {status.chargesEnabled ? (
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <XCircle className="h-4 w-4 text-red-500" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {status.chargesEnabled ? 'Enabled' : 'Disabled'}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between py-2">
+                <span className="text-sm text-gray-600">Receive Payouts</span>
+                <div className="flex items-center space-x-2">
+                  {status.payoutsEnabled ? (
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <XCircle className="h-4 w-4 text-red-500" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {status.payoutsEnabled ? 'Enabled' : 'Disabled'}
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-
-        <p className="text-sm text-muted-foreground">
-          {statusInfo.description}
-        </p>
-
-        {config.isDemoMode && (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Demo Mode Active</AlertTitle>
-            <AlertDescription>
-              To enable live payments, configure your Stripe account and update environment variables.
-              See the Stripe Go-Live Guide for instructions.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {!config.configValid && (
-          <Alert variant="destructive">
-            <XCircle className="h-4 w-4" />
-            <AlertTitle>Configuration Issues</AlertTitle>
-            <AlertDescription>
-              Payment system configuration has errors. Please check your environment variables
-              and ensure all required Stripe keys are properly set.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <div className="pt-2 border-t">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="font-medium">Mode:</span>
-              <span className="ml-2">
-                {config.isLiveMode ? 'Live' : config.isDemoMode ? 'Demo' : 'Test'}
-              </span>
-            </div>
-            <div>
-              <span className="font-medium">Config:</span>
-              <span className="ml-2">
-                {config.configValid ? 'Valid' : 'Invalid'}
-              </span>
-            </div>
+        
+        <div className="mt-6 flex gap-3">
+          {!status?.connected ? (
+            <Button 
+              onClick={handleConnect}
+              disabled={connecting}
+              className="bg-orange-600 hover:bg-orange-700 text-white"
+            >
+              {connecting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                'Connect Stripe Account'
+              )}
+            </Button>
+          ) : (
+            <>
+              {status.requiresAction && status.actionUrl && (
+                <Button 
+                  onClick={() => window.open(status.actionUrl, '_blank')}
+                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  Complete Setup
+                </Button>
+              )}
+              
+              <Button 
+                variant="outline"
+                onClick={() => window.open('https://dashboard.stripe.com', '_blank')}
+                className="border-orange-200 text-orange-700 hover:bg-orange-50"
+              >
+                View Stripe Dashboard
+              </Button>
+            </>
+          )}
+        </div>
+        
+        {status?.accountId && (
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <p className="text-xs text-gray-500">
+              Account ID: {status.accountId}
+            </p>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

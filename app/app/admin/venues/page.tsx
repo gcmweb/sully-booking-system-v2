@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -8,29 +7,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
 import { Input } from "../../../components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../../components/ui/alert-dialog";
-import { Building, Search, Filter, Eye, Edit, Trash2, ArrowLeft, ChevronLeft, ChevronRight, MapPin, Users, Calendar, Star } from 'lucide-react';
+import { ArrowLeft, Building, Search, MapPin, Users, DollarSign, Eye, Edit, ToggleLeft, ToggleRight } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { toast } from 'sonner';
+import { useToast } from "../../../hooks/use-toast";
 
 interface Venue {
   id: string;
   name: string;
-  slug: string;
-  description?: string;
+  description: string;
   address: string;
   city: string;
-  postcode: string;
-  phone: string;
-  email: string;
-  venueType: string;
+  state: string;
+  pricePerHour: number;
   capacity: number;
+  images: string[];
   isActive: boolean;
-  featured: boolean;
   createdAt: string;
   owner: {
     firstName: string;
@@ -39,40 +32,21 @@ interface Venue {
   };
   _count: {
     bookings: number;
-    tables: number;
-    events: number;
   };
-  subscription?: {
-    plan: string;
-    status: string;
-  };
-}
-
-interface VenuesPagination {
-  page: number;
-  limit: number;
-  total: number;
-  pages: number;
 }
 
 export default function AdminVenuesPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const [venues, setVenues] = useState<Venue[]>([]);
-  const [pagination, setPagination] = useState<VenuesPagination>({
-    page: 1,
-    limit: 10,
-    total: 0,
-    pages: 0,
-  });
   const [loadingData, setLoadingData] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
-  const [showVenueDialog, setShowVenueDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [venueToDelete, setVenueToDelete] = useState<Venue | null>(null);
+  const [cityFilter, setCityFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [updatingVenue, setUpdatingVenue] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'SUPER_ADMIN')) {
@@ -84,136 +58,78 @@ export default function AdminVenuesPage() {
     if (user && user.role === 'SUPER_ADMIN') {
       fetchVenues();
     }
-  }, [user, pagination.page, typeFilter, statusFilter]);
+  }, [user, currentPage, searchTerm, cityFilter, statusFilter]);
 
   const fetchVenues = async () => {
     try {
-      setLoadingData(true);
       const params = new URLSearchParams({
-        page: pagination.page.toString(),
-        limit: pagination.limit.toString(),
+        page: currentPage.toString(),
+        limit: '20',
+        ...(searchTerm && { search: searchTerm }),
+        ...(cityFilter && { city: cityFilter }),
+        ...(statusFilter && { status: statusFilter }),
       });
       
-      if (typeFilter !== 'all') {
-        params.append('type', typeFilter);
-      }
-      if (statusFilter !== 'all') {
-        params.append('status', statusFilter);
-      }
-
       const response = await fetch(`/api/admin/venues?${params}`);
       if (response.ok) {
         const data = await response.json();
         setVenues(data.venues);
-        setPagination(data.pagination);
-      } else {
-        toast.error('Failed to fetch venues');
+        setTotalPages(data.totalPages);
       }
     } catch (error) {
       console.error('Failed to fetch venues:', error);
-      toast.error('Failed to fetch venues');
     } finally {
       setLoadingData(false);
     }
   };
 
   const toggleVenueStatus = async (venueId: string, currentStatus: boolean) => {
+    setUpdatingVenue(venueId);
     try {
-      const response = await fetch(`/api/admin/venues/${venueId}/toggle-status`, {
+      const response = await fetch(`/api/admin/venues/${venueId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ isActive: !currentStatus }),
       });
-
+      
       if (response.ok) {
-        toast.success(`Venue ${!currentStatus ? 'enabled' : 'disabled'} successfully`);
-        fetchVenues();
+        setVenues(venues.map(v => 
+          v.id === venueId ? { ...v, isActive: !currentStatus } : v
+        ));
+        toast({
+          title: 'Venue updated',
+          description: `Venue has been ${!currentStatus ? 'activated' : 'deactivated'}.`,
+        });
       } else {
-        toast.error('Failed to update venue status');
+        throw new Error('Failed to update venue');
       }
     } catch (error) {
-      console.error('Failed to toggle venue status:', error);
-      toast.error('Failed to update venue status');
-    }
-  };
-
-  const toggleFeaturedStatus = async (venueId: string, currentFeatured: boolean) => {
-    try {
-      const response = await fetch('/api/admin/venues/featured', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          venueId, 
-          featured: !currentFeatured 
-        }),
+      toast({
+        title: 'Error',
+        description: 'Failed to update venue status. Please try again.',
+        variant: 'destructive',
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success(data.message);
-        fetchVenues();
-      } else {
-        toast.error(data.error || 'Failed to update featured status');
-      }
-    } catch (error) {
-      console.error('Failed to toggle featured status:', error);
-      toast.error('Failed to update featured status');
+    } finally {
+      setUpdatingVenue(null);
     }
   };
 
-  const deleteVenue = async (venueId: string) => {
-    try {
-      const response = await fetch(`/api/admin/venues/${venueId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        toast.success('Venue deleted successfully');
-        fetchVenues();
-        setShowDeleteDialog(false);
-        setVenueToDelete(null);
-      } else {
-        toast.error('Failed to delete venue');
-      }
-    } catch (error) {
-      console.error('Failed to delete venue:', error);
-      toast.error('Failed to delete venue');
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
-  const filteredVenues = venues.filter(venue =>
-    venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    venue.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    venue.owner.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    venue.owner.lastName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const getVenueTypeBadgeColor = (type: string) => {
-    switch (type) {
-      case 'RESTAURANT':
-        return 'bg-blue-100 text-blue-800';
-      case 'CAFE':
-        return 'bg-green-100 text-green-800';
-      case 'BAR':
-        return 'bg-purple-100 text-purple-800';
-      case 'PUB':
-        return 'bg-orange-100 text-orange-800';
-      case 'FINE_DINING':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  const cities = Array.from(new Set(venues.map(venue => venue.city))).sort();
 
   if (loading || !user || user.role !== 'SUPER_ADMIN') {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
       </div>
     );
   }
@@ -230,386 +146,245 @@ export default function AdminVenuesPage() {
                 <span>Back to Admin</span>
               </Link>
               <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-xl font-semibold text-gray-900">Venue Management</h1>
+              <div className="flex items-center space-x-2">
+                <Building className="h-6 w-6 text-orange-600" />
+                <span className="text-xl font-semibold text-gray-900">Venue Management</span>
+              </div>
             </div>
+            <Badge variant="secondary">Admin Panel</Badge>
           </div>
         </div>
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filters */}
+        {/* Page Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-6"
+          className="mb-8"
         >
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Filter className="h-5 w-5" />
-                <span>Filters & Search</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      placeholder="Search venues by name, city, or owner..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="w-full md:w-48">
-                  <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Filter by type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="RESTAURANT">Restaurant</SelectItem>
-                      <SelectItem value="CAFE">Cafe</SelectItem>
-                      <SelectItem value="BAR">Bar</SelectItem>
-                      <SelectItem value="PUB">Pub</SelectItem>
-                      <SelectItem value="FINE_DINING">Fine Dining</SelectItem>
-                      <SelectItem value="FAST_CASUAL">Fast Casual</SelectItem>
-                      <SelectItem value="OTHER">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="w-full md:w-48">
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Filter by status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Venue Management
+          </h1>
+          <p className="text-gray-600">
+            Manage all venues, their status, and venue owners
+          </p>
         </motion.div>
 
-        {/* Venues Table */}
+        {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
+          className="bg-white rounded-lg shadow-sm p-6 mb-6 border"
         >
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Building className="h-5 w-5" />
-                  <span>Venues ({pagination.total})</span>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loadingData ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                </div>
-              ) : (
-                <>
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Venue</TableHead>
-                          <TableHead>Owner</TableHead>
-                          <TableHead>Type</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Featured</TableHead>
-                          <TableHead>Capacity</TableHead>
-                          <TableHead>Bookings</TableHead>
-                          <TableHead>Subscription</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredVenues.map((venue) => (
-                          <TableRow key={venue.id}>
-                            <TableCell>
-                              <div>
-                                <div className="font-medium">{venue.name}</div>
-                                <div className="text-sm text-gray-500 flex items-center">
-                                  <MapPin className="h-3 w-3 mr-1" />
-                                  {venue.city}, {venue.postcode}
-                                </div>
-                                <div className="text-sm text-gray-500">{venue.email}</div>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div>
-                                <div className="font-medium">
-                                  {venue.owner.firstName} {venue.owner.lastName}
-                                </div>
-                                <div className="text-sm text-gray-500">{venue.owner.email}</div>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <Badge className={getVenueTypeBadgeColor(venue.venueType)}>
-                                {venue.venueType.replace('_', ' ')}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={venue.isActive ? 'default' : 'destructive'}>
-                                {venue.isActive ? 'Active' : 'Inactive'}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center space-x-2">
-                                <Badge 
-                                  variant={venue.featured ? 'default' : 'outline'}
-                                  className={venue.featured ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : ''}
-                                >
-                                  <Star className={`h-3 w-3 mr-1 ${venue.featured ? 'fill-current' : ''}`} />
-                                  {venue.featured ? 'Featured' : 'Not Featured'}
-                                </Badge>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center">
-                                <Users className="h-4 w-4 mr-1 text-gray-400" />
-                                {venue.capacity}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center">
-                                <Calendar className="h-4 w-4 mr-1 text-gray-400" />
-                                {venue._count.bookings}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {venue.subscription ? (
-                                <Badge variant={venue.subscription.status === 'ACTIVE' ? 'default' : 'secondary'}>
-                                  {venue.subscription.plan}
-                                </Badge>
-                              ) : (
-                                <Badge variant="outline">Free</Badge>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center space-x-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedVenue(venue);
-                                    setShowVenueDialog(true);
-                                  }}
-                                >
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant={venue.featured ? 'outline' : 'default'}
-                                  size="sm"
-                                  onClick={() => toggleFeaturedStatus(venue.id, venue.featured)}
-                                  className={venue.featured ? 'border-yellow-300 text-yellow-700 hover:bg-yellow-50' : ''}
-                                >
-                                  <Star className={`h-4 w-4 ${venue.featured ? 'fill-current' : ''}`} />
-                                </Button>
-                                <Button
-                                  variant={venue.isActive ? 'destructive' : 'default'}
-                                  size="sm"
-                                  onClick={() => toggleVenueStatus(venue.id, venue.isActive)}
-                                >
-                                  {venue.isActive ? 'Disable' : 'Enable'}
-                                </Button>
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => {
-                                    setVenueToDelete(venue);
-                                    setShowDeleteDialog(true);
-                                  }}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Input
+                placeholder="Search venues..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
+              />
+            </div>
+            
+            <select
+              value={cityFilter}
+              onChange={(e) => setCityFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Cities</option>
+              {cities.map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+            
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:border-orange-500 focus:ring-orange-500 bg-white"
+            >
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            
+            <Button 
+              onClick={() => {
+                setSearchTerm('');
+                setCityFilter('');
+                setStatusFilter('');
+                setCurrentPage(1);
+              }}
+              variant="outline"
+              className="border-orange-200 text-orange-700 hover:bg-orange-50"
+            >
+              Clear Filters
+            </Button>
+          </div>
+        </motion.div>
 
-                  {/* Pagination */}
-                  {pagination.pages > 1 && (
-                    <div className="flex items-center justify-between mt-6">
-                      <div className="text-sm text-gray-500">
-                        Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
-                        {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
-                        {pagination.total} venues
+        {/* Venues Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          {loadingData ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+                  <CardContent className="p-6">
+                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="flex justify-between items-center">
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                      <div className="h-8 bg-gray-200 rounded w-24"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : venues.length === 0 ? (
+            <div className="text-center py-12">
+              <Building className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No venues found</h3>
+              <p className="text-gray-600">Try adjusting your search criteria</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {venues.map((venue) => (
+                <Card key={venue.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative h-48">
+                    {venue.images && venue.images.length > 0 ? (
+                      <Image
+                        src={venue.images[0]}
+                        alt={venue.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                        <Building className="h-16 w-16 text-orange-400" />
                       </div>
-                      <div className="flex items-center space-x-2">
+                    )}
+                    <div className="absolute top-4 right-4">
+                      <Badge variant={venue.isActive ? "default" : "secondary"} className={venue.isActive ? "bg-green-600" : ""}>
+                        {venue.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <CardContent className="p-6">
+                    <div className="mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        {venue.name}
+                      </h3>
+                      <div className="flex items-center text-gray-600 mb-2">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        <span className="text-sm">{venue.city}, {venue.state}</span>
+                      </div>
+                      <p className="text-gray-600 text-sm line-clamp-2">
+                        {venue.description}
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                      <div className="flex items-center text-gray-600">
+                        <DollarSign className="h-4 w-4 mr-1" />
+                        <span>${venue.pricePerHour}/hr</span>
+                      </div>
+                      <div className="flex items-center text-gray-600">
+                        <Users className="h-4 w-4 mr-1" />
+                        <span>{venue.capacity} guests</span>
+                      </div>
+                    </div>
+                    
+                    <div className="border-t pt-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {venue.owner.firstName} {venue.owner.lastName}
+                          </p>
+                          <p className="text-xs text-gray-600">{venue.owner.email}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium">{venue._count.bookings} bookings</p>
+                          <p className="text-xs text-gray-600">Added {formatDate(venue.createdAt)}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
                         <Button
-                          variant="outline"
                           size="sm"
-                          onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
-                          disabled={pagination.page === 1}
+                          variant="outline"
+                          onClick={() => router.push(`/venue/${venue.id}`)}
+                          className="border-orange-200 text-orange-700 hover:bg-orange-50"
                         >
-                          <ChevronLeft className="h-4 w-4" />
-                          Previous
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
                         </Button>
-                        <span className="text-sm">
-                          Page {pagination.page} of {pagination.pages}
-                        </span>
+                        
                         <Button
-                          variant="outline"
                           size="sm"
-                          onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
-                          disabled={pagination.page === pagination.pages}
+                          variant={venue.isActive ? "destructive" : "default"}
+                          onClick={() => toggleVenueStatus(venue.id, venue.isActive)}
+                          disabled={updatingVenue === venue.id}
+                          className={venue.isActive ? '' : 'bg-green-600 hover:bg-green-700'}
                         >
-                          Next
-                          <ChevronRight className="h-4 w-4" />
+                          {updatingVenue === venue.id ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          ) : venue.isActive ? (
+                            <>
+                              <ToggleLeft className="h-4 w-4 mr-1" />
+                              Deactivate
+                            </>
+                          ) : (
+                            <>
+                              <ToggleRight className="h-4 w-4 mr-1" />
+                              Activate
+                            </>
+                          )}
                         </Button>
                       </div>
                     </div>
-                  )}
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-
-      {/* Venue Details Dialog */}
-      <Dialog open={showVenueDialog} onOpenChange={setShowVenueDialog}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Venue Details</DialogTitle>
-            <DialogDescription>
-              Detailed information about the selected venue
-            </DialogDescription>
-          </DialogHeader>
-          {selectedVenue && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Name</label>
-                  <p className="text-sm">{selectedVenue.name}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Slug</label>
-                  <p className="text-sm">{selectedVenue.slug}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Type</label>
-                  <Badge className={getVenueTypeBadgeColor(selectedVenue.venueType)}>
-                    {selectedVenue.venueType.replace('_', ' ')}
-                  </Badge>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Status</label>
-                  <Badge variant={selectedVenue.isActive ? 'default' : 'destructive'}>
-                    {selectedVenue.isActive ? 'Active' : 'Inactive'}
-                  </Badge>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Featured</label>
-                  <Badge 
-                    variant={selectedVenue.featured ? 'default' : 'outline'}
-                    className={selectedVenue.featured ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : ''}
-                  >
-                    <Star className={`h-3 w-3 mr-1 ${selectedVenue.featured ? 'fill-current' : ''}`} />
-                    {selectedVenue.featured ? 'Featured' : 'Not Featured'}
-                  </Badge>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Capacity</label>
-                  <p className="text-sm">{selectedVenue.capacity} people</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Phone</label>
-                  <p className="text-sm">{selectedVenue.phone}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Email</label>
-                  <p className="text-sm">{selectedVenue.email}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Created</label>
-                  <p className="text-sm">{new Date(selectedVenue.createdAt).toLocaleDateString()}</p>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-gray-500">Address</label>
-                <p className="text-sm">{selectedVenue.address}, {selectedVenue.city}, {selectedVenue.postcode}</p>
-              </div>
-              
-              {selectedVenue.description && (
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Description</label>
-                  <p className="text-sm">{selectedVenue.description}</p>
-                </div>
-              )}
-
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Total Bookings</label>
-                  <p className="text-2xl font-bold">{selectedVenue._count.bookings}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Tables</label>
-                  <p className="text-2xl font-bold">{selectedVenue._count.tables}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Events</label>
-                  <p className="text-2xl font-bold">{selectedVenue._count.events}</p>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-500">Owner</label>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="font-medium">{selectedVenue.owner.firstName} {selectedVenue.owner.lastName}</p>
-                  <p className="text-sm text-gray-600">{selectedVenue.owner.email}</p>
-                </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+          
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-8">
+              <p className="text-sm text-gray-600">
+                Page {currentPage} of {totalPages}
+              </p>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
               </div>
             </div>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowVenueDialog(false)}>
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Venue</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete "{venueToDelete?.name}"? 
-              This action cannot be undone and will also delete all associated bookings, tables, and events.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setVenueToDelete(null)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => venueToDelete && deleteVenue(venueToDelete.id)}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Delete Venue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        </motion.div>
+      </div>
     </div>
   );
 }

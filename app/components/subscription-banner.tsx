@@ -1,102 +1,143 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Alert, AlertDescription } from "./ui/alert";
-import { Button } from "./ui/button";
-import { Crown, AlertTriangle, X } from 'lucide-react';
-import { SubscriptionPlan } from '@prisma/client';
+import { X, Crown, Zap, Star } from 'lucide-react';
+import { Button } from './ui/button';
+import { Card } from './ui/card';
+import { useAuth } from './auth-provider';
 import Link from 'next/link';
 
 interface SubscriptionBannerProps {
-  plan: SubscriptionPlan;
-  venuesUsed: number;
-  venuesLimit: number | null;
   className?: string;
 }
 
-export function SubscriptionBanner({ 
-  plan, 
-  venuesUsed, 
-  venuesLimit, 
-  className = '' 
-}: SubscriptionBannerProps) {
+export function SubscriptionBanner({ className = '' }: SubscriptionBannerProps) {
+  const { user } = useAuth();
   const [dismissed, setDismissed] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Check if banner was previously dismissed
-    const dismissedKey = `subscription-banner-dismissed-${plan}`;
-    const wasDismissed = localStorage.getItem(dismissedKey) === 'true';
-    setDismissed(wasDismissed);
-  }, [plan]);
+    const isDismissed = localStorage.getItem('subscription-banner-dismissed');
+    if (isDismissed) {
+      setDismissed(true);
+    }
+  }, []);
 
   const handleDismiss = () => {
     setDismissed(true);
-    const dismissedKey = `subscription-banner-dismissed-${plan}`;
-    localStorage.setItem(dismissedKey, 'true');
+    localStorage.setItem('subscription-banner-dismissed', 'true');
   };
 
-  // Show banner for FREE users or when approaching limits
-  const shouldShow = !dismissed && (
-    plan === SubscriptionPlan.FREE || 
-    (venuesLimit && venuesUsed >= venuesLimit * 0.8)
-  );
+  // Don't render on server or if dismissed
+  if (!mounted || dismissed) {
+    return null;
+  }
 
-  if (!shouldShow) return null;
+  // Don't show if user has an active subscription
+  if (user?.subscriptionStatus === 'active') {
+    return null;
+  }
 
-  const isAtLimit = venuesLimit && venuesUsed >= venuesLimit;
-  const isNearLimit = venuesLimit && venuesUsed >= venuesLimit * 0.8;
+  const getBannerContent = () => {
+    if (!user?.subscriptionStatus || user.subscriptionStatus === 'inactive') {
+      return {
+        icon: Star,
+        title: 'Start Your Free Trial',
+        description: 'Get 14 days free access to all premium features. No credit card required.',
+        buttonText: 'Start Free Trial',
+        buttonHref: '/dashboard/subscription',
+        gradient: 'from-orange-500 to-orange-600'
+      };
+    }
+
+    if (user.subscriptionStatus === 'past_due') {
+      return {
+        icon: Zap,
+        title: 'Payment Required',
+        description: 'Your subscription payment is overdue. Update your payment method to continue.',
+        buttonText: 'Update Payment',
+        buttonHref: '/dashboard/subscription',
+        gradient: 'from-red-500 to-red-600'
+      };
+    }
+
+    if (user.subscriptionStatus === 'canceled') {
+      return {
+        icon: Crown,
+        title: 'Reactivate Your Subscription',
+        description: 'Your subscription was canceled. Reactivate to continue using premium features.',
+        buttonText: 'Reactivate',
+        buttonHref: '/dashboard/subscription',
+        gradient: 'from-orange-500 to-orange-600'
+      };
+    }
+
+    return null;
+  };
+
+  const content = getBannerContent();
+  if (!content) return null;
+
+  const Icon = content.icon;
 
   return (
-    <Alert className={`border-blue-200 bg-blue-50 ${className}`}>
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-3">
-          {plan === SubscriptionPlan.FREE ? (
-            <Crown className="h-5 w-5 text-blue-600" />
-          ) : (
-            <AlertTriangle className="h-5 w-5 text-orange-600" />
-          )}
+    <Card className={`relative overflow-hidden border-0 shadow-lg ${className}`}>
+      <div className={`bg-gradient-to-r ${content.gradient} p-6 text-white`}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleDismiss}
+          className="absolute top-2 right-2 text-white hover:bg-white/20 h-8 w-8 p-0"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+        
+        <div className="flex items-start space-x-4 pr-8">
+          <div className="flex-shrink-0">
+            <div className="flex items-center justify-center w-12 h-12 bg-white/20 rounded-full">
+              <Icon className="h-6 w-6" />
+            </div>
+          </div>
           
-          <div className="flex-1">
-            <AlertDescription className="text-sm">
-              {plan === SubscriptionPlan.FREE ? (
-                <>
-                  <strong>Unlock more features!</strong> Upgrade to Professional or Enterprise 
-                  to create more venues, get unlimited bookings, and access premium features.
-                </>
-              ) : isAtLimit ? (
-                <>
-                  <strong>Venue limit reached!</strong> You've used all {venuesLimit} venues 
-                  in your {plan} plan. Upgrade to create more venues.
-                </>
-              ) : isNearLimit ? (
-                <>
-                  <strong>Approaching venue limit.</strong> You've used {venuesUsed} of {venuesLimit} venues 
-                  in your {plan} plan. Consider upgrading soon.
-                </>
-              ) : null}
-            </AlertDescription>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold mb-1">
+              {content.title}
+            </h3>
+            <p className="text-white/90 text-sm mb-4">
+              {content.description}
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link href={content.buttonHref}>
+                <Button 
+                  size="sm"
+                  className="bg-white text-gray-900 hover:bg-gray-100 font-medium"
+                >
+                  {content.buttonText}
+                </Button>
+              </Link>
+              
+              {user?.subscriptionStatus === 'inactive' && (
+                <Link href="/pricing">
+                  <Button 
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-white/20 border border-white/30"
+                  >
+                    View Pricing
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
-
-        <div className="flex items-center gap-2">
-          <Link href="/dashboard/subscription">
-            <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-              <Crown className="h-4 w-4 mr-1" />
-              {plan === SubscriptionPlan.FREE ? 'Upgrade' : 'Manage'}
-            </Button>
-          </Link>
-          
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleDismiss}
-            className="h-8 w-8 p-0"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+        
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+        <div className="absolute bottom-0 right-0 w-20 h-20 bg-white/10 rounded-full translate-y-10 translate-x-10"></div>
       </div>
-    </Alert>
+    </Card>
   );
 }
